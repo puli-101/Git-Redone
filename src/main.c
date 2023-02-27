@@ -62,7 +62,12 @@ int main() {
 	//free(l) <- detruire liste
 	free(str_list);
 	
-	
+	//test ftol
+	List * leer;
+	leer=ftol("test.txt");
+	char buff[LIST_STR_SIZE];
+	printf("%s \n", buff);
+	ltof(leer,"test2.txt");
 
 	return 0;
 }
