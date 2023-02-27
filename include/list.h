@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <assert.h>
 typedef struct cell {
     char* data ;
     struct cell * next ;
@@ -32,13 +33,5 @@ List* stol(char* s);
 void ltof(List* L, char* path);
 
 List* ftol(char* path);
-
-List* listdir(char* root_dir);
-
-int file_exists(char *file);
-
-void cp(char *to, char *from);
-
-char* hashToPath(char* hash);
 
 #endif
