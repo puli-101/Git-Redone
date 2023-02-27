@@ -79,3 +79,20 @@ List* stol(char* s) {
 
     return l;
 }
+
+void ltof(List* L, char* path) {
+    FILE* f = fopen(path, "w");
+    char* str = ltos(L);
+    fprintf(f, "%s", str);
+    free(str);
+    fclose(f);
+}
+
+List* ftol(char* path) {
+    FILE* f = fopen(path, "r");
+    char buffer[LIST_STR_SIZE];
+    if (!fgets(buffer, LIST_STR_SIZE, f))
+        return NULL;
+    fclose (f);
+    return stol(buffer);
+}
