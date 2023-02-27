@@ -1,10 +1,12 @@
-all: main
+FLAGS = -Iinclude -Wall
 
-%: %.c list.o 
-	gcc -o $@ $^
+all: bin/main
 
-%.o: %.c %.h
-	gcc -c $<
+bin/%: src/%.c obj/list.o 
+	gcc -o $@ $^ $(FLAGS)
+
+obj/%.o: src/%.c include/%.h
+	gcc -c -o $@ $< $(FLAGS)
 
 clean:
-	rm main *.o
+	rm bin/main obj/*.o

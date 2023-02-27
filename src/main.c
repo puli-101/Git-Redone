@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "list.h"
+#include <assert.h>
 #define STR_SIZE 500
 
 int hashFile(char* source, char* dest) {
@@ -14,7 +15,7 @@ int hashFile(char* source, char* dest) {
 
 char* sha256file(char* file) {
 	static char template [] = "tmpXXXXXX" ;
-	char fname [1000];
+	char fname [400];
 	char cmd [STR_SIZE];
 	char *sha = (char*)malloc(STR_SIZE*sizeof(char));
 	if (sha == NULL) 
@@ -46,10 +47,22 @@ char* sha256file(char* file) {
 }
 
 int main() {
-	char* sha = sha256file("main.c");
-	printf("sha de main.c : %s\n", sha);
+	char* sha = sha256file("src/main.c");
+	printf("sha de src/main.c : %s\n", sha);
 	free(sha);
-
 	
+	List* l = initList();
+	insertFirst(l,buildCell("mot1"));
+	insertFirst(l,buildCell("mot2"));
+	char* str_list = ltos(l);
+	
+	assert(searchList(l,"mot1") != NULL);
+	printf("%s\n", str_list);
+
+	//free(l) <- detruire liste
+	free(str_list);
+	
+	
+
 	return 0;
 }

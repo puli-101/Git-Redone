@@ -10,6 +10,7 @@ Cell* buildCell(char* ch) {
     Cell* cell = (Cell*)malloc(sizeof(Cell));
     cell->data = strdup(ch);
     cell->next = NULL;
+	return cell;
 }
 
 void insertFirst(List *L, Cell* C) {
@@ -27,8 +28,9 @@ char* ltos(List* L) {
     str[0] = '\0';
 
     Cell* tmp = *L;
-    while(tmp) {
-        sprintf(str,"%s|%s",str,ctos(tmp));
+    while(tmp) { 
+	strcat(str,"|");
+        strcat(str,ctos(tmp));
         tmp = tmp->next;
     }
     return str;
