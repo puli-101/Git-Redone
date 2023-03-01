@@ -34,4 +34,6 @@ void ltof(List* L, char* path);
 
 List* ftol(char* path);
 
+void freeList(List* L);
+
 #endif

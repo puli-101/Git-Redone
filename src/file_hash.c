@@ -1,48 +1,5 @@
 #include "file_hash.h"
 
-List* listdir(char* root_dir) {
-    DIR * dp = opendir ( root_dir ) ;
-    List* l = initList();
-
-    struct dirent * ep ;
-    if ( dp != NULL ) {
-        while ((ep = readdir (dp)) != NULL ) {
-            insertFirst(l, buildCell(ep->d_name));
-        }
-    }
-
-    return l;
-}
-
-int file_exists(char *file) {
-    DIR * dp = opendir ( "." ) ;
-    
-    struct dirent * ep ;
-    if (dp != NULL) {
-        while ((ep = readdir(dp)) != NULL) { 
-            if (!strcmp(ep->d_name, file)) 
-                return 1;
-        }
-    }
-
-    return 0;
-}
-
-void cp(char *to, char *from) {
-    FILE* src = fopen(from, "r");
-    assert(src);
-    FILE* dest = fopen(to, "w");
-    assert(dest);
-
-    char buff[LIST_STR_SIZE];
-    while (fgets(buff, LIST_STR_SIZE, src)) {
-        fputs(buff, dest);
-    }
-
-    fclose(src);
-    fclose(dest);
-}
-
 int hashFile(char* source, char* dest) {
 	char cmd [HASH_STR_SIZE];
 	
@@ -83,6 +40,56 @@ char* sha256file(char* file) {
 	return sha;
 }
 
+List* listdir(char* root_dir) {
+    DIR * dp = opendir ( root_dir ) ;
+    List* l = initList();
+
+    struct dirent * ep ;
+    if ( dp != NULL ) {
+        while ((ep = readdir (dp)) != NULL ) {
+            insertFirst(l, buildCell(ep->d_name));
+        }
+    }
+
+    return l;
+}
+
+int file_exists(char *file) {
+    DIR * dp = opendir ( "." ) ;
+    
+    struct dirent * ep ;
+    if (dp != NULL) {
+        while ((ep = readdir(dp)) != NULL) { 
+            if (!strcmp(ep->d_name, file)) 
+                return 1;
+        }
+    }
+
+    return 0;
+}
+
+void cp(char *to, char *from) {
+    FILE* src = fopen(from, "r");
+    if (!src) {
+        fprintf(stderr,"File %s does not exists\n",from);
+        return;
+    }
+    FILE* dest = fopen(to, "w");
+    if (!dest) {
+        fprintf(stderr,"Impossible de creer le fichier %s\n",to);
+        return;
+    }
+
+    char buff[LIST_STR_SIZE];
+    while (fgets(buff, LIST_STR_SIZE, src)) {
+        fputs(buff, dest);
+    }
+
+    fclose(src);
+    fclose(dest);
+}
+
+//a partir du hash on renvoie l'adresse du fichier correspondant au hash
 char* hashToPath(char* hash) {
     char* path = malloc(sizeof(char)*257);
     path[0] = hash[0];
@@ -97,13 +104,18 @@ char* hashToPath(char* hash) {
 }
 
 void blobFile(char* file) {
+    //On recupere l'adresse correspondant au fichier instantanee
     char* instantanee = hashToPath(sha256file(file));
     char rep[3];
     char cmd[HASH_STR_SIZE];
+    //On recupere le nom du repertoire
     rep[0] = instantanee[0];
     rep[1] = instantanee[1];
     rep[2] = '\0';
-    sprintf(cmd, "mkdir %s", rep);
-    cp(file, instantanee);
+    //On cree le repertoire
+    sprintf(cmd, "mkdir -p %s", rep);
+    system(cmd);
+    //On copie le fichier 'file' vers 'instantanee'
+    cp(instantanee, file);
     free(instantanee);
 }

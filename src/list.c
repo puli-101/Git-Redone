@@ -29,8 +29,8 @@ char* ltos(List* L) {
 
     Cell* tmp = *L;
     while(tmp) { 
-	    strcat(str,"|");
         strcat(str,ctos(tmp));
+        strcat(str,"|");
         tmp = tmp->next;
     }
     return str;
@@ -58,11 +58,13 @@ Cell* searchList(List* L, char* str) {
 
 List* stol(char* s) {
     char buff[LIST_STR_SIZE];
-    int buf_i = 0;
+    int buf_i = 0;  //compteur de la taille du mot
     List* l = initList();
-    
     for (int i = 0; s[i] != '\0'; i++) {
         if (s[i] == '|') {
+            //on ignore les mots vides
+            if (buf_i == 0) 
+                continue;
             buff[buf_i] = '\0';
             insertFirst(l, buildCell(buff));
             buf_i = 0;
@@ -82,6 +84,10 @@ List* stol(char* s) {
 
 void ltof(List* L, char* path) {
     FILE* f = fopen(path, "w");
+    if (f == NULL) {
+        fprintf(stderr,"Unable to create %s file\n", path);
+        exit(-1);
+    }
     char* str = ltos(L);
     fprintf(f, "%s", str);
     free(str);
@@ -90,9 +96,24 @@ void ltof(List* L, char* path) {
 
 List* ftol(char* path) {
     FILE* f = fopen(path, "r");
+    if (f == NULL) {
+        fprintf(stderr,"Unable to open %s file\n", path);
+        exit(-1);
+    }
     char buffer[LIST_STR_SIZE];
     if (!fgets(buffer, LIST_STR_SIZE, f))
         return NULL;
     fclose (f);
     return stol(buffer);
+}
+
+void freeList(List* L) {
+    if (!L) return;
+    Cell* c = *L, *tmp;
+    while(c) {
+        tmp = c->next;
+        free(c);
+        c = tmp;
+    }
+    free(L);
 }
