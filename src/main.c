@@ -46,13 +46,22 @@ int main() {
 	//work file
 	WorkTree* wt = initWorkTree();
 	appendWorkTree(wt,"src/main.c", "12415f53a12e12d", 666);
-	appendWorkTree(wt,"src/file_hash.c", "15f53a12e12dea1", 665);
-	appendWorkTree(wt,"src/list.c", "2415f53a12e12de21", 655);
+	appendWorkTree(wt,"src/file_hash.c", "15f53a12e1de193", 665);
+	appendWorkTree(wt,"src/list.c", "2415f53a12e12de211", 655);
 	char* str = wtts(wt);
+	
 	printf("work tree : \n%s", str);
 
 	WorkTree* wt2 = stwt(str);
 	str = wtts(wt2);
 	printf("work tree 2 : \n%s", str);
+	printf("work tree size : %d\n", wt2->n);
+
+	//wttf(wt2,"tests/test_wttf.txt");
+
+	WorkTree* wt3 = ftwt("tests/test_wttf.txt");
+	str = wtts(wt3);
+	printf("work tree 3 : \n%s", str);
+	printf("work tree size : %d\n", wt3->n);
 	return 0;
 }

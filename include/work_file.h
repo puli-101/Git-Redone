@@ -47,8 +47,12 @@ char* wtts(WorkTree* wt);
 //String to work tree
 WorkTree* stwt(char* str);
 
+//WorkTree* to File
 int wttf(WorkTree* wt, char* file);
 
-//libere work tree
+//File to WorkTree*
+WorkTree* ftwt(char* file);
 
+//libere work tree
+void freeWorkTree(WorkTree* wt);
 #endif

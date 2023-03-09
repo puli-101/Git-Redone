@@ -43,6 +43,7 @@ char* wfts(WorkFile* wf) {
 }
 
 //on alloue et renvoie un WF* a partir du char*
+//on suppose que char* est dans le bon format
 WorkFile* stwf(char* ch) {
     char name[WF_STR_SIZE];
     char hash[WF_STR_SIZE];
@@ -111,7 +112,7 @@ char* wtts(WorkTree* wt) {
         strcat(str,"\n");
         free(tmp);
     }
-    //str[k] = '\0';
+    strcat(str,"\n");
     return str;
 }
 
@@ -124,14 +125,12 @@ void freeWorkFile(WorkFile* wf) {
 //String to work tree
 WorkTree* stwt(char* str) {
     char str_wf[WF_STR_SIZE];
-    int index = 0;
+    int index = 0, i;
     WorkTree* wt = initWorkTree();
-    for (int i = 0; str[i] != '\0'; i++) {
+    for (i = 0; str[i] != '\0'; i++) {
         if (str[i] == '\n' && index != 0) {
-            str_wf[i] = '\0';
+            str_wf[index] = '\0';
             WorkFile* wf = stwf(str_wf);
-            printf("!str_wf : %s\n", str_wf);
-            printf("!wfts : %s\n", wfts(wf));
             appendWorkTree(wt,wf->name, wf->hash, wf->mode);
             freeWorkFile(wf);
             index = 0;
@@ -140,9 +139,16 @@ WorkTree* stwt(char* str) {
             index++;
         }
     }
+    if (index != 0) {
+        str_wf[index] = '\0';
+        WorkFile* wf = stwf(str_wf);
+        appendWorkTree(wt,wf->name, wf->hash, wf->mode);
+        freeWorkFile(wf);
+    }
     return wt;
 }
 
+//WorkTree* to File
 int wttf(WorkTree* wt, char* file) {
     FILE* f = fopen(file, "w");
     assert(f != NULL);
@@ -151,4 +157,34 @@ int wttf(WorkTree* wt, char* file) {
     free(str);
     fclose(f);
     return 1;
+}
+
+//File to WorkTree*
+//on suppose que chaque ligne a le bon format
+WorkTree* ftwt(char* file) {
+    FILE* f = fopen(file, "r");
+    char buff[WF_STR_SIZE];
+    WorkTree* wt = initWorkTree();
+
+    while (fgets(buff, WF_STR_SIZE, f)) {
+        //on ignore les lignes vides
+        if (!strcmp(buff,"\n"))
+            continue;
+        WorkFile* wf = stwf(buff);
+        if (wf != NULL)
+            appendWorkTree(wt,wf->name, wf->hash, wf->mode);
+        freeWorkFile(wf);
+    }
+
+    return wt;
+}
+
+//libere work tree
+void freeWorkTree(WorkTree* wt) {
+    for (int i = 0; i < wt->n; i++) {
+        free(wt->tab[i].name);
+        free(wt->tab[i].hash);
+    }
+    free(wt->tab);
+    free(wt);
 }
