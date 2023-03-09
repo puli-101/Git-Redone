@@ -98,16 +98,10 @@ int appendWorkTree(WorkTree* wt, char* name, char* hash, int mode) {
 
 char* wtts(WorkTree* wt) {
     char* str = (char*)malloc(sizeof(char) * WF_STR_SIZE * WF_TREE_SIZE);
-    //int i = 0, k;
+    str[0] = '\0';
+
     for (int j = 0; j < wt->n; j++) {
         char* tmp = wfts(&(wt->tab[j]));
-        /*for (k = i; k - i < strlen(tmp); k++) {
-            str[k] = tmp[k - i];
-        }
-        if (i != 0) {
-            str[k] = '\n';
-        }
-        i = k + 1;*/
         strcat(str,tmp);
         strcat(str,"\n");
         free(tmp);
@@ -240,30 +234,31 @@ char* blobWorkTree(WorkTree* wt) {
 	return sha;
 }
 
-int is_regular_file(const char *path)
-{
+int is_regular_file(const char *path) {
     struct stat path_stat;
     stat(path, &path_stat);
     return S_ISREG(path_stat.st_mode);
 }
 
 char* saveWorkTree(WorkTree* wt, char* path) {
-    char new_path[WF_STR_SIZE];
     char file_path[WF_STR_SIZE * 2];
     char* file;
 
-    printf("saveWorkTree at %s\n",path);
+    printf("SaveWorkTree at %s\n",path);
     for (int i = 0; i < wt->n; i++) {
         file = wt->tab[i].name;
 
         if (is_regular_file(file)) {
-            printf("Save file %s\n", file);
+            printf("\tSaving file %s\n", file);
+            //on stocke l'instantanee du fichier
             blobFile(file);
+            //si jamais on avait deja une chaine correspondant au hash enregistre dans le tas on libere la memoire
             free(wt->tab[i].hash);
+            //on recupere le hash du fichier 
             wt->tab[i].hash = sha256file(file);
+
         } else {    //on suppose qu'il n'y a pas de tubes ni de links
-            sprintf(new_path, "%s/%s",path, file);
-            printf("Save directory %s\n", new_path);
+            printf("\tSaving directory %s\n", file);
             WorkTree* new_wt = initWorkTree();
             List* l = listdir(file);
             Cell* element = *l;
@@ -272,13 +267,14 @@ char* saveWorkTree(WorkTree* wt, char* path) {
                     element = element->next;
                     continue;
                 }
-                sprintf(file_path, "%s/%s",new_path, element->data);
+                sprintf(file_path, "%s/%s",file, element->data);
+                //on laisse vide les champs hash et mode car ils seront remplis plus tard
                 appendWorkTree(new_wt, file_path, "", 0);
                 element = element->next;
             }
             freeList(l);
             
-            char* hash = saveWorkTree(new_wt, new_path);
+            char* hash = saveWorkTree(new_wt, file);
             free(wt->tab[i].hash);
             wt->tab[i].hash = hash;
 
@@ -289,6 +285,6 @@ char* saveWorkTree(WorkTree* wt, char* path) {
     
 
     
-
+    printf("---- Saving WorkTree at %s\n",path);
     return blobWorkTree(wt);
 }
