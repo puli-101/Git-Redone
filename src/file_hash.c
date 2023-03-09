@@ -53,6 +53,8 @@ List* listdir(char* root_dir) {
         }
     }
 
+    closedir(dp);
+
     return l;
 }
 
@@ -107,7 +109,8 @@ char* hashToPath(char* hash) {
 
 void blobFile(char* file) {
     //On recupere l'adresse correspondant au fichier instantanee
-    char* instantanee = hashToPath(sha256file(file));
+    char* hash = sha256file(file);
+    char* instantanee = hashToPath(hash);
     char rep[3];
     char cmd[HASH_STR_SIZE];
     //On recupere le nom du repertoire
@@ -120,4 +123,5 @@ void blobFile(char* file) {
     //On copie le fichier 'file' vers 'instantanee'
     cp(instantanee, file);
     free(instantanee);
+    free(hash);
 }

@@ -112,6 +112,7 @@ void freeList(List* L) {
     Cell* c = *L, *tmp;
     while(c) {
         tmp = c->next;
+        free(c->data);
         free(c);
         c = tmp;
     }

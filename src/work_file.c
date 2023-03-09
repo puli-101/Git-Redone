@@ -169,7 +169,7 @@ WorkTree* ftwt(char* file) {
             appendWorkTree(wt,wf->name, wf->hash, wf->mode);
         freeWorkFile(wf);
     }
-
+    fclose(f);
     return wt;
 }
 
@@ -191,6 +191,8 @@ char* blobWorkTree(WorkTree* wt) {
     char* instantanee;
 	char cmd [HASH_STR_SIZE];
 	char *sha = (char*)malloc(HASH_STR_SIZE*sizeof(char));
+    char* hash;
+
 	if (sha == NULL) 
 		return NULL;
 	
@@ -214,7 +216,10 @@ char* blobWorkTree(WorkTree* wt) {
     sha = sha256file(temp_wt_file);
 
     //On recupere l'adresse correspondant au fichier instantanee
-    instantanee = hashToPath(sha256file(temp_wt_file));
+    hash = sha256file(temp_wt_file);
+    instantanee = hashToPath(hash);
+    free(hash);
+    
     strcat(instantanee, ".t");
     //On recupere le nom du repertoire
     rep[0] = instantanee[0];
@@ -228,8 +233,8 @@ char* blobWorkTree(WorkTree* wt) {
     free(instantanee);
 
     //On supprime le fichier temporaire
-    //sprintf(cmd,"rm %s",temp_wt_file);
-	//system(cmd);
+    sprintf(cmd,"rm %s",temp_wt_file);
+	system(cmd);
 
 	return sha;
 }
@@ -262,6 +267,7 @@ char* saveWorkTree(WorkTree* wt, char* path) {
             WorkTree* new_wt = initWorkTree();
             List* l = listdir(file);
             Cell* element = *l;
+            //on liste tous les elements du repertoire (en ignorant . et ..)
             while (element) {
                 if (!strcmp(element->data,"..") || !strcmp(element->data,".")) {
                     element = element->next;

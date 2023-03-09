@@ -77,8 +77,11 @@ int main() {
 	//test saveWorkTree
 	WorkTree* wt4 = initWorkTree();
 	appendWorkTree(wt4,"tests","",0);
+	free(str);
 	str = saveWorkTree(wt4,".");
 	free(str);
 	freeWorkTree(wt4);
+
+	//possible memory leak : blobWorkTree
 	return 0;
 }
