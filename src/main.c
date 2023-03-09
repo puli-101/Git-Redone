@@ -1,5 +1,6 @@
 #include "list.h"
 #include "file_hash.h"
+#include "work_file.h"
 #define STR_SIZE 500
 
 int main() {
@@ -41,5 +42,17 @@ int main() {
 	printf("%s\n",str_list);
 	free(str_list);
 	freeList(l);
+
+	//work file
+	WorkTree* wt = initWorkTree();
+	appendWorkTree(wt,"src/main.c", "12415f53a12e12d", 666);
+	appendWorkTree(wt,"src/file_hash.c", "15f53a12e12dea1", 665);
+	appendWorkTree(wt,"src/list.c", "2415f53a12e12de21", 655);
+	char* str = wtts(wt);
+	printf("work tree : \n%s", str);
+
+	WorkTree* wt2 = stwt(str);
+	str = wtts(wt2);
+	printf("work tree 2 : \n%s", str);
 	return 0;
 }

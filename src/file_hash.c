@@ -1,5 +1,6 @@
 #include "file_hash.h"
 
+//ecrit le hash du fichier source dans le fichier dest
 int hashFile(char* source, char* dest) {
 	char cmd [HASH_STR_SIZE];
 	
@@ -7,6 +8,7 @@ int hashFile(char* source, char* dest) {
 	return system(cmd);
 }
 
+//on alloue et retourne le hash du fichier file sous forme d'une chaine de caracteres
 char* sha256file(char* file) {
 	static char template [] = "tmpXXXXXX" ;
 	char fname [HASH_STR_SIZE - 100];
