@@ -53,6 +53,7 @@ int main() {
 	printf("work tree : \n%s", str);
 
 	WorkTree* wt2 = stwt(str);
+	free(str);
 	str = wtts(wt2);
 	printf("work tree 2 : \n%s", str);
 	printf("work tree size : %d\n", wt2->n);
@@ -60,8 +61,25 @@ int main() {
 	//wttf(wt2,"tests/test_wttf.txt");
 
 	WorkTree* wt3 = ftwt("tests/test_wttf.txt");
+	free(str);
 	str = wtts(wt3);
 	printf("work tree 3 : \n%s", str);
 	printf("work tree size : %d\n", wt3->n);
+
+	free(str);
+	str = blobWorkTree(wt3);
+	printf("hash du wt3 : %s\n", str);
+
+	freeWorkTree(wt);
+	freeWorkTree(wt2);
+	freeWorkTree(wt3);
+	
+	//test saveWorkTree
+	WorkTree* wt4 = initWorkTree();
+	appendWorkTree(wt4,"tests","",0);
+	//str = saveWorkTree(wt4,".");
+	//free(str);
+	blobWorkTree(wt4);
+	freeWorkTree(wt4);
 	return 0;
 }

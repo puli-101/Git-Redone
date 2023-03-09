@@ -55,4 +55,10 @@ WorkTree* ftwt(char* file);
 
 //libere work tree
 void freeWorkTree(WorkTree* wt);
+
+//retourner le hash du fichier temporaire qui contient le
+char* blobWorkTree(WorkTree* wt);
+
+char* saveWorkTree(WorkTree* wt, char* path);
+
 #endif

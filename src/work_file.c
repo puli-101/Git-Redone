@@ -188,3 +188,107 @@ void freeWorkTree(WorkTree* wt) {
     free(wt->tab);
     free(wt);
 }
+
+//retourner le hash du fichier temporaire qui contient le
+char* blobWorkTree(WorkTree* wt) {
+    static char template [] = "tmpXXXXXX" ;
+	char temp_wt_file [HASH_STR_SIZE - 100];
+    char rep[3];
+    char* instantanee;
+	char cmd [HASH_STR_SIZE];
+	char *sha = (char*)malloc(HASH_STR_SIZE*sizeof(char));
+	if (sha == NULL) 
+		return NULL;
+	
+	strcpy (temp_wt_file , template) ;
+	
+	//On cree le fichier tmpX...
+	int fd = mkstemp (temp_wt_file) ;
+
+	if (fd == -1) {
+		free(sha);
+        close(fd);
+		return NULL;
+	}
+
+    close(fd);
+
+    //On stocke la version string du WorkTree dans le temp_wt_file
+    wttf(wt, temp_wt_file);
+
+    //On recupere le hash du workfile stocke dans temp_wt_file
+    sha = sha256file(temp_wt_file);
+
+    //On recupere l'adresse correspondant au fichier instantanee
+    instantanee = hashToPath(sha256file(temp_wt_file));
+    strcat(instantanee, ".t");
+    //On recupere le nom du repertoire
+    rep[0] = instantanee[0];
+    rep[1] = instantanee[1];
+    rep[2] = '\0';
+    //On cree le repertoire
+    sprintf(cmd, "mkdir -p %s", rep);
+    system(cmd);
+    //On copie le fichier 'file' vers 'instantanee'
+    cp(instantanee, temp_wt_file);
+    free(instantanee);
+
+    //On supprime le fichier temporaire
+    //sprintf(cmd,"rm %s",temp_wt_file);
+	//system(cmd);
+
+	return sha;
+}
+
+int is_regular_file(const char *path)
+{
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISREG(path_stat.st_mode);
+}
+
+char* saveWorkTree(WorkTree* wt, char* path) {
+    char new_path[WF_STR_SIZE];
+    char file_path[WF_STR_SIZE * 2];
+    char* file;
+
+    printf("saveWorkTree at %s\n",path);
+    for (int i = 0; i < wt->n; i++) {
+        file = wt->tab[i].name;
+
+        if (is_regular_file(file)) {
+            printf("Save file %s\n", file);
+            blobFile(file);
+            free(wt->tab[i].hash);
+            wt->tab[i].hash = sha256file(file);
+        } else {    //on suppose qu'il n'y a pas de tubes ni de links
+            sprintf(new_path, "%s/%s",path, file);
+            printf("Save directory %s\n", new_path);
+            WorkTree* new_wt = initWorkTree();
+            List* l = listdir(file);
+            Cell* element = *l;
+            while (element) {
+                if (!strcmp(element->data,"..") || !strcmp(element->data,".")) {
+                    element = element->next;
+                    continue;
+                }
+                sprintf(file_path, "%s/%s",new_path, element->data);
+                appendWorkTree(new_wt, file_path, "", 0);
+                element = element->next;
+            }
+            freeList(l);
+            
+            char* hash = saveWorkTree(new_wt, new_path);
+            free(wt->tab[i].hash);
+            wt->tab[i].hash = hash;
+
+            freeWorkTree(new_wt);
+        }
+        wt->tab[i].mode = getChmod(file);
+    }
+    
+
+    
+
+    return blobWorkTree(wt);
+}
