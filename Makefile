@@ -7,10 +7,12 @@ all: bin/main
 bin/%: src/%.c $(OBJECTS)
 	rm -f tmp*
 	rm -Rf ??
-	gcc -o $@ $^ $(FLAGS)
+	gcc -g -o $@ $^ $(FLAGS)
+	mkdir -p ../projet_tests
+	cp -r * ../projet_tests/
 
 obj/%.o: src/%.c include/%.h
-	gcc -c -o $@ $< $(FLAGS)
+	gcc -c -g -o $@ $< $(FLAGS)
 
 clean:
 	rm -Rf bin/main obj/*.o tmp* ??

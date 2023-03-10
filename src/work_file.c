@@ -13,8 +13,8 @@ int getChmod ( const char * path ) {
 }
 
 void setMode ( int mode , char * path ) {
-    char buff [100];
-    sprintf ( buff , "chmod %d %s " , mode , path ) ;
+    char buff [1000];
+    sprintf ( buff , "chmod %o %s " , mode , path ) ;
     system ( buff ) ;
 }
 
@@ -293,4 +293,41 @@ char* saveWorkTree(WorkTree* wt, char* path) {
     
     printf("---- Saving WorkTree at %s\n",path);
     return blobWorkTree(wt);
+}
+
+void restoreWorkTree(WorkTree* wt, char* path) {
+    char cmd[WF_STR_SIZE];
+    char* hash_path;
+
+    printf("Restoring directory %s\n",path);
+    sprintf(cmd, "mkdir -p %s",path);
+    system(cmd);
+    for (int i = 0; i < wt->n; i++) {
+        hash_path = hashToPath(wt->tab[i].hash);
+
+        //printf("Searching dir %s\n", rep);
+
+        //si le fichier existe
+        if (access(hash_path, F_OK) == 0) {
+            printf("\tRestoring file %s from %s\n",wt->tab[i].name,hash_path);
+            cp(wt->tab[i].name, hash_path);
+            setMode(wt->tab[i].mode, wt->tab[i].name);
+        } else {
+            strcat(hash_path, ".t");
+            //si c'est plutot un worktree au lieu d'un fichier regulier
+            if (access(hash_path, F_OK) == 0)  {
+                WorkTree* new_wt = ftwt(hash_path);
+                if (new_wt == NULL) 
+                    fprintf(stderr,"! Erreur de lecture du work tree %s\n",hash_path);
+                restoreWorkTree(new_wt, wt->tab[i].name);
+                freeWorkTree(new_wt);
+            } else {
+                fprintf(stderr,"! File %s does not exists\n", hash_path);
+            }
+        }
+
+        free(hash_path);
+    }
+
+    printf("Directory %s restored successfully\n",path);
 }

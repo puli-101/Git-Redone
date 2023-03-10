@@ -96,14 +96,18 @@ void cp(char *to, char *from) {
 //a partir du hash on renvoie l'adresse du fichier correspondant au hash
 char* hashToPath(char* hash) {
     char* path = malloc(sizeof(char)*300);
+    int i;
+    if (path == NULL) {
+        fprintf(stderr,"malloc error at hashToPath\n");
+    }
     path[0] = hash[0];
     path[1] = hash[1];
     path[2] = '/';
 
-    for (int  i = 3; i < 257; i++) {
+    for (i = 3; i < 257 && hash[i-1] != '\0'; i++) {
         path[i] = hash[i - 1];
     } 
-    path[257] = '\0';
+    path[i] = '\0';
     return path;
 }
 

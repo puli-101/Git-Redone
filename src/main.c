@@ -80,6 +80,14 @@ int main() {
 	free(str);
 	str = saveWorkTree(wt4,".");
 	free(str);
+
+	str = wtts(wt4);
+	printf("wt4 : %s\n", str);
+
+	system("rm -Rf tests");
+	restoreWorkTree(wt4, ".");
+
+	free(str);
 	freeWorkTree(wt4);
 
 	//possible memory leak : blobWorkTree
