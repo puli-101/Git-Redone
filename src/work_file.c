@@ -183,23 +183,27 @@ void freeWorkTree(WorkTree* wt) {
     free(wt);
 }
 
-//retourner le hash du fichier temporaire qui contient le
-char* blobWorkTree(WorkTree* wt) {
+/**
+ * Fonction qui a partir d'un objet quelconque et une fonction qui enregistre cet objet dans un fichier
+ * cree une copie d'un instantanee associe au contenu de l'objet et retourne le hash du fichier
+ * utilisee dans blobWorkTree et blobCommit
+*/
+char* blobContent(void* obj, char* extension, void (*toFile)(void*, char*)) {
     static char template [] = "tmpXXXXXX" ;
-	char temp_wt_file [HASH_STR_SIZE - 100];
+	char temp_obj_file [WF_STR_SIZE - 100]; //fichier temporaire dans lequel on enregistrera une copie de l'instantanee
     char rep[3];
     char* instantanee;
-	char cmd [HASH_STR_SIZE];
-	char *sha = (char*)malloc(HASH_STR_SIZE*sizeof(char));
+	char cmd [WF_STR_SIZE];
+	char *sha = (char*)malloc(WF_STR_SIZE*sizeof(char));
     char* hash;
 
 	if (sha == NULL) 
 		return NULL;
 	
-	strcpy (temp_wt_file , template) ;
+	strcpy (temp_obj_file , template) ;
 	
 	//On cree le fichier tmpX...
-	int fd = mkstemp (temp_wt_file) ;
+	int fd = mkstemp (temp_obj_file) ;
 
 	if (fd == -1) {
 		free(sha);
@@ -209,18 +213,18 @@ char* blobWorkTree(WorkTree* wt) {
 
     close(fd);
 
-    //On stocke la version string du WorkTree dans le temp_wt_file
-    wttf(wt, temp_wt_file);
+    //On stocke la version string du WorkTree dans le temp_obj_file
+    toFile(obj, temp_obj_file);
 
-    //On recupere le hash du workfile stocke dans temp_wt_file
-    sha = sha256file(temp_wt_file);
+    //On recupere le hash du workfile stocke dans temp_obj_file
+    sha = sha256file(temp_obj_file);
 
     //On recupere l'adresse correspondant au fichier instantanee
-    hash = sha256file(temp_wt_file);
+    hash = sha256file(temp_obj_file);
     instantanee = hashToPath(hash);
     free(hash);
     
-    strcat(instantanee, ".t");
+    strcat(instantanee, extension);
     //On recupere le nom du repertoire
     rep[0] = instantanee[0];
     rep[1] = instantanee[1];
@@ -229,14 +233,24 @@ char* blobWorkTree(WorkTree* wt) {
     sprintf(cmd, "mkdir -p %s", rep);
     system(cmd);
     //On copie le fichier 'file' vers 'instantanee'
-    cp(instantanee, temp_wt_file);
+    cp(instantanee, temp_obj_file);
     free(instantanee);
 
     //On supprime le fichier temporaire
-    sprintf(cmd,"rm %s",temp_wt_file);
+    sprintf(cmd,"rm %s",temp_obj_file);
 	system(cmd);
 
 	return sha;
+}
+
+//fonction temporaire qui fait le cast de void* vers WorkTree* pour pouvoir utiliser wttf
+void castWTreeToFile(void* obj, char* file) {
+    wttf((WorkTree*)obj, file);
+}
+
+//retourner le hash du fichier temporaire qui contient le wt
+char* blobWorkTree(WorkTree* wt) {
+    return blobContent((void*) wt, ".t", castWTreeToFile);
 }
 
 int is_regular_file(const char *path) {

@@ -1,6 +1,7 @@
 #include "list.h"
 #include "file_hash.h"
 #include "work_file.h"
+#include "commit_handler.h"
 #define STR_SIZE 500
 
 int main() {
@@ -91,5 +92,23 @@ int main() {
 	freeWorkTree(wt4);
 
 	//possible memory leak : blobWorkTree
+	printf("!\n");
+	Commit* c = initCommit(), *c2;
+
+	commitSet(c, "key1", "msg1");
+	commitSet(c, "key2", "msg2");
+	commitSet(c, "key3", "msg3");
+
+	assert(commitGet(c,"key1") != NULL);
+
+	ctf(c,"tests/commit1.txt");
+	c2 = ftc("tests/commit1.txt");
+
+	str = cts(c2);
+	printf("Commit 2 : \n%s",str);
+
+	free(str);
+	freeCommit(c);
+	freeCommit(c2);
 	return 0;
 }
