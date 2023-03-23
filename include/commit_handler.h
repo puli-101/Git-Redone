@@ -50,4 +50,6 @@ Commit* ftc(char* file);
 
 char* cts(Commit* c);
 
+char* blobCommit(Commit* c);
+
 #endif

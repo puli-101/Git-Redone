@@ -2,9 +2,11 @@
 #include "file_hash.h"
 #include "work_file.h"
 #include "commit_handler.h"
+#include "reference_handler.h"
 #define STR_SIZE 500
 
 int main() {
+	char* str;
 	//test de sha256 file
 	char* sha = sha256file("src/main.c");
 	printf("sha de src/main.c : %s\n", sha);
@@ -33,7 +35,7 @@ int main() {
 	str_list = ltos(l);
 	printf("Current dir : %s\n",str_list);
 	blobFile("src/main.c");
-
+	
 	free(str_list);
 	freeList(l);
 
@@ -49,7 +51,7 @@ int main() {
 	appendWorkTree(wt,"src/main.c", "12415f53a12e12d", 666);
 	appendWorkTree(wt,"src/file_hash.c", "15f53a12e1de193", 665);
 	appendWorkTree(wt,"src/list.c", "2415f53a12e12de211", 655);
-	char* str = wtts(wt);
+	str = wtts(wt);
 	
 	printf("work tree : \n%s", str);
 
@@ -106,9 +108,20 @@ int main() {
 
 	str = cts(c2);
 	printf("Commit 2 : \n%s",str);
+	free(str);
+
+	str = blobCommit(c);
+	printf("blob : %s\n", str);
 
 	free(str);
 	freeCommit(c);
 	freeCommit(c2);
+
+	str = getRef("tests/test.txt");
+	if (str != NULL) {
+		printf("ref : %s\n", str);
+		if (str[0] == '\0') printf("!\n");
+		free(str);
+	}
 	return 0;
 }

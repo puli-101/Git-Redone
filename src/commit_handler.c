@@ -189,8 +189,8 @@ Commit* ftc(char* file) {
 }
 
 //fonction temporaire qui fait le cast de void* vers Commit* pour pouvoir utiliser ctf
-void castCommitToFile(void * v, char* file) {
-    ctf((Commit*)v, file);
+void castCommitToFile(void * obj, char* file) {
+    ctf((Commit*)obj, file);
 }
 
 char* blobCommit(Commit* c) {
