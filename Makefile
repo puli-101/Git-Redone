@@ -2,7 +2,7 @@ FLAGS = -Iinclude -Wall
 
 OBJECTS = obj/list.o obj/file_hash.o obj/work_file.o obj/commit_handler.o obj/reference_handler.o
 
-all: bin/main
+all: bin/main_test bin/main
 
 bin/%: src/%.c $(OBJECTS)
 	rm -f tmp*
