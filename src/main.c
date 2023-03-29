@@ -1,4 +1,6 @@
 #include "reference_handler.h"
+#include "file_hash.h"
+#include "list.h"
 
 int equals(char* str1, char* str2) {
     return !strcmp(str1, str2);
@@ -26,30 +28,61 @@ int main(int argc, char** argv) {
     } else if (equals(instruction, "init")) {
         initRefs();
     } else if (equals(instruction, "list-refs")) {
-
+        List* l = listdir(".refs");
+        if (l != NULL) {
+            Cell* element = *l;
+            printf(".refs :\n");
+            while(element) {
+                if (!equals(element->data,".") && !equals(element->data, "..")) {
+                    printf("%s\n", element->data);
+                }
+                element = element->next;
+            }
+            freeList(l);
+        } else {
+            fprintf(stderr,"Directory .refs does not exist\n");
+        }
     } else if (equals(instruction, "create-ref")) {
         if (argc != 4) {
             fprintf(stderr,"Utilisation : %s create-ref <name> <hash>\n", programme);
             exit(-1);
         }
+        createUpdateRef(argv[2], argv[3]);
     } else if (equals(instruction, "delete-ref")) {
         if (argc != 3) {
             fprintf(stderr, "Utilisation : %s delete-ref <name>", programme);
             exit(-1);
         }
+        deleteRef(argv[2]);
     } else if (equals(instruction, "add")) {
         if (argc < 3) {
             fprintf(stderr, "Utilisation : %s add <elem> [<elem2> <elem3> ...]", programme);
             exit(-1);
         }
-    } else if (equals(instruction, "list-add")) { 
-
-    } else if (equals(instruction, "clear-add")) { 
         
+        for (int i = 2; i < argc; i++) {
+            char* file = argv[i];
+            myGitAdd(file);
+        }
+    } else if (equals(instruction, "list-add")) { 
+        WorkTree* wt = ftwt(".add");
+        char* str = wtts(wt);
+        printf(".add : \n%s\n",str);
+        free(str);
+        freeWorkTree(wt);
+    } else if (equals(instruction, "clear-add")) { 
+        system("rm -f .add");
     } else if (equals(instruction, "commit")) { 
         if (argc < 3) {
             fprintf(stderr, "Utilisation : %s commit <branch_name> [-m <message>]", programme);
             exit(-1);
+        }
+        if (argc == 5 && equals(argv[3], "-m")) {
+            myGitCommit(argv[2],argv[4]);
+        } else if (argc == 3) {
+            myGitCommit(argv[2], NULL);
+        } else {
+            fprintf(stderr,"Format error\n");
         }
     }
     return 0;

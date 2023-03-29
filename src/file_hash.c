@@ -53,7 +53,8 @@ List* listdir(char* root_dir) {
         }
     }
 
-    closedir(dp);
+    if (dp != NULL)
+        closedir(dp);
 
     return l;
 }

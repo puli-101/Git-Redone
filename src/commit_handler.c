@@ -205,6 +205,6 @@ void freeCommit(Commit* c) {
             free(c->T[i]);
         }
     }
-    free(c->T);
+    free(c->T); 
     free(c);
 }

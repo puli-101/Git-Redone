@@ -21,9 +21,11 @@ void deleteRef(char* ref_name) {
 }
 
 char* getRef(char* ref_name) {
-    if (access(ref_name, F_OK) == 0) {
+    char buff[300] = ".refs/";
+    strcat(buff,ref_name);
+    if (access(buff, F_OK) == 0) {
         char* content = (char*)malloc(sizeof(char)*500);
-        FILE* f = fopen(ref_name, "r");
+        FILE* f = fopen(buff, "r");
 
         if (fgets(content,500,f) == NULL) {
             content[0] = '\0';
