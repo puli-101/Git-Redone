@@ -15,4 +15,4 @@ obj/%.o: src/%.c include/%.h
 	gcc -c -g -o $@ $< $(FLAGS)
 
 clean:
-	rm -Rf bin/main obj/*.o tmp* ??
+	rm -Rf bin/main obj/*.o tmp* ?? .refs

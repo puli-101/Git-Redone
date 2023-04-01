@@ -117,10 +117,6 @@ List* getAllCommits() {
     return l;
 }
 
-void myGitCheckoutBranch(char* branch) {
-
-}
-
 void restoreCommit(char* hash_commit) {
     char *commit_path = hashToPathExtension(hash_commit, ".c") ;
     Commit *c = ftc (commit_path);
@@ -138,7 +134,7 @@ void restoreCommit(char* hash_commit) {
 }
 
 void myGitCheckoutBranch(char* branch) {
-    FILE* f = fopen(".current_branch");
+    FILE* f = fopen(".current_branch", "w");
     fprintf(f, "%s", branch);
     fclose(f);
 
@@ -175,13 +171,19 @@ void myGitCheckoutCommit(char* pattern) {
 
     if (*filter == NULL) {
         fprintf(stderr,"Error : commit not found\n");
+        freeList(filter);
         return;
     } else if ((*filter)->next == NULL) {
         //s'il ne reste qu'un commit dans la liste
-        
+        char* commit_hash = (*filter)->data;
+        createUpdateRef("HEAD", commit_hash);
+        restoreCommit(commit_hash);
     } else {
-
+        printf("Possible matches for pattern %s :\n", pattern);
+        for (Cell* e = *filter; e != NULL; e = e->next)
+            printf("%s\n", e->data);
     }
 
+    freeList(all_commits);
     free(all_commits);
 }

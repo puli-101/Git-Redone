@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
         system("rm -f .add");
     } else if (equals(instruction, "commit")) { 
         if (argc < 3) {
-            fprintf(stderr, "Utilisation : %s commit <branch_name> [-m <message>]", programme);
+            fprintf(stderr, "Utilisation : %s commit <branch_name> [-m <message>]\n", programme);
             exit(-1);
         }
         if (argc == 5 && equals(argv[3], "-m")) {
@@ -109,6 +109,18 @@ int main(int argc, char** argv) {
             exit(-1);
         }
         printBranch(argv[2]);
-    }
+    } else if (equals(instruction, "checkout-branch")) {
+        if (argc != 3) {
+            fprintf(stderr,"Utilisation : %s checkout-branch <branch-name>\n", programme);
+            exit(-1);
+        }
+        myGitCheckoutBranch(argv[2]);
+    } else if (equals(instruction, "checkout-commit")) {
+        if (argc != 3) {
+            fprintf(stderr,"Utilisation : %s checkout-commit <pattern>\n", programme);
+            exit(-1);
+        }
+        myGitCheckoutBranch(argv[2]);
+    } 
     return 0;
 }

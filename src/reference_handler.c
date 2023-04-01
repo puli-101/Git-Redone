@@ -41,17 +41,14 @@ char* getRef(char* ref_name) {
 
 void myGitAdd(char* file_or_folder) {
     system("touch .add");
-    WorkTree* add = ftwt(".add");
-    appendWorkTree(add, file_or_folder, "", getChmod(file_or_folder));
-    wttf(add, ".add");
-    freeWorkTree(add);
-
-    /** 
-        No habia leido la indicacion xd, pero esto es mas facil
-        FILE* f = fopen(".add", "a");
-        fprintf(f,"%s\t%s\t%d\n", file_or_folder,"",getChmod(file_or_folder));
-        fclose(f);
-    */
+    if (access(file_or_folder, F_OK) == 0) {
+        WorkTree* add = ftwt(".add");
+        appendWorkTree(add, file_or_folder, "", getChmod(file_or_folder));
+        wttf(add, ".add");
+        freeWorkTree(add);
+    } else {
+        fprintf(stderr,"Error : file %s does not exist\n", file_or_folder);
+    }
 }
 
 void myGitCommit(char* branch_name, char* message) {
