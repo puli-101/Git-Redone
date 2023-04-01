@@ -1,6 +1,7 @@
 #include "reference_handler.h"
 #include "file_hash.h"
 #include "list.h"
+#include "branch_handler.h"
 
 int equals(char* str1, char* str2) {
     return !strcmp(str1, str2);
@@ -27,6 +28,7 @@ int main(int argc, char** argv) {
         printf("%s commit [-m \"<message>\"]\n", programme);
     } else if (equals(instruction, "init")) {
         initRefs();
+        initBranch();
     } else if (equals(instruction, "list-refs")) {
         List* l = listdir(".refs");
         if (l != NULL) {
@@ -84,6 +86,29 @@ int main(int argc, char** argv) {
         } else {
             fprintf(stderr,"Format error\n");
         }
+    } else if (equals(instruction, "get-current-branch")) {
+        //./myGit get-current-branch
+        char *str = getCurrentBranch();
+        printf("Current branch : %s\n", str);
+        free(str);
+    } else if (equals(instruction, "branch")) {
+        //./myGit branch <branch-name>
+        if (argc != 3) {
+            fprintf(stderr,"Utilisation : %s branch <branch-name>\n", programme);
+            exit(-1);
+        }
+        char* branch = argv[2];
+        if (branchExists(branch)) {
+            fprintf(stderr,"Branch %s already exits\n", branch);
+        } else {
+            createBranch(branch);
+        }
+    } else if (equals(instruction, "branch-print")) {
+        if (argc != 3) {
+            fprintf(stderr,"Utilisation : %s branch-print <branch-name>\n", programme);
+            exit(-1);
+        }
+        printBranch(argv[2]);
     }
     return 0;
 }
