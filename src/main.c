@@ -120,7 +120,9 @@ int main(int argc, char** argv) {
             fprintf(stderr,"Utilisation : %s checkout-commit <pattern>\n", programme);
             exit(-1);
         }
-        myGitCheckoutBranch(argv[2]);
-    } 
+        myGitCheckoutCommit(argv[2]);
+    } else {
+        fprintf(stderr, "command not found\n");
+    }
     return 0;
 }

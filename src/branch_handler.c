@@ -28,7 +28,7 @@ char* getCurrentBranch() {
 //utilities.h
 char* hashToPathExtension(char* hash, char* extension) {
     char* str = hashToPath(hash);
-    strcat(hash,extension);
+    strcat(str,extension);
     return str;
 }
 
@@ -36,16 +36,16 @@ void printBranch(char* branch) {
     char* commit_hash = getRef(branch);
     if (!commit_hash) return;
     char* path = hashToPathExtension(commit_hash, ".c");
+    printf("! %s \n", path);
     Commit *c = ftc(path);
     while(c) {
         char* message = commitGet(c,"message");
-        if (!message) {
-            message = (char*)malloc(sizeof(char));
-            message[0] = '\0';
+        
+        if (message != NULL) {
+            printf("Hash : %s\nMessage : %s\n", commit_hash, message);
+        } else {
+            printf("Hash : %s\nMessage : [empty]\n", commit_hash);
         }
-        printf("Hash : %s\nMessage : %s\n", commit_hash, message);
-
-        free(message);
         free(path);
         free(commit_hash);
         
@@ -124,9 +124,11 @@ void restoreCommit(char* hash_commit) {
     char* wt_hash = strdup(commitGet (c , "tree"));
     char *wt_path = hashToPathExtension(wt_hash, ".t");
 
-    WorkTree * wt = ftwt (wt_path) ;
+    WorkTree * wt = ftwt (wt_path);
+
     restoreWorkTree(wt , ".");
 
+    freeCommit(c);
     freeWorkTree(wt);
     free(commit_path);
     free(wt_hash);
@@ -139,10 +141,14 @@ void myGitCheckoutBranch(char* branch) {
     fclose(f);
 
     char* commit_hash = getRef(branch);
+    if (commit_hash == NULL || commit_hash[0] == '\0') {
+        fprintf(stderr,"Invalid branch %s\n",branch);
+        return;
+    }
     createUpdateRef("HEAD", commit_hash);
-    free(commit_hash);
 
     restoreCommit(commit_hash);
+    free(commit_hash);
 }
 
 int isPrefix(char* prefix, char* word) {
@@ -184,6 +190,5 @@ void myGitCheckoutCommit(char* pattern) {
             printf("%s\n", e->data);
     }
 
-    freeList(all_commits);
-    free(all_commits);
+    freeList(filter);
 }

@@ -53,7 +53,7 @@ void myGitAdd(char* file_or_folder) {
 
 void myGitCommit(char* branch_name, char* message) {
     if (access(".refs", F_OK) != 0) {
-        fprintf(stderr,"“Initialiser d'abord les references du projet\n");
+        fprintf(stderr,"Initialiser d'abord les references du projet\n");
         exit(-1);
     } 
     char buff[300] = ".refs/";
@@ -66,10 +66,14 @@ void myGitCommit(char* branch_name, char* message) {
     char* last_commit = getRef(branch_name);
     char* head_commit = getRef("HEAD");
     if (strcmp(head_commit,last_commit) != 0) { //s'ils ne pointent pas vers la meme chose
-        fprintf(stderr, "“HEAD doit pointer sur le dernier commit de la branche\n");
+        fprintf(stderr, "HEAD doit pointer sur le dernier commit de la branche\n");
         exit(-1);
     }
     
+    if (access(".add", F_OK) != 0) {
+        fprintf(stderr, "No files to be committed\n");
+        exit(-1);
+    }
     WorkTree* wt = ftwt(".add");
     char* hashWT;
     system("rm .add");
