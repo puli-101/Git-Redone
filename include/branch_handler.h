@@ -35,4 +35,6 @@ List* filterList(List* L, char* pattern);
 
 void myGitCheckoutCommit(char* pattern);
 
+char* hashToPathExtension(char* hash, char* extension);
+
 #endif
