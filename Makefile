@@ -1,6 +1,6 @@
 FLAGS = -Iinclude -Wall
 
-OBJECTS = obj/list.o obj/file_hash.o obj/work_file.o obj/commit_handler.o obj/reference_handler.o obj/branch_handler.o
+OBJECTS = obj/list.o obj/file_hash.o obj/work_file.o obj/commit_handler.o obj/reference_handler.o obj/branch_handler.o obj/merge_handler.o
 
 all: bin/main_test bin/main
 

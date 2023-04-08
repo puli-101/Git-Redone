@@ -2,6 +2,7 @@
 #include "file_hash.h"
 #include "list.h"
 #include "branch_handler.h"
+#include "merge_handler.h"
 
 int equals(char* str1, char* str2) {
     return !strcmp(str1, str2);
@@ -26,6 +27,12 @@ int main(int argc, char** argv) {
         printf("%s list-add\n", programme);
         printf("%s clear-add\n", programme);
         printf("%s commit [-m \"<message>\"]\n", programme);
+        printf("%s get-current-branch\n", programme);
+        printf("%s branch <branch-name>\n", programme);
+        printf("%s branch-print <branch-name>\n", programme);
+        printf("%s checkout-branch <branch-name>\n", programme);
+        printf("%s checkout-commit <pattern>\n", programme);
+        printf("%s merge <branch> <message>\n", programme);
     } else if (equals(instruction, "init")) {
         initRefs();
         initBranch();
@@ -89,7 +96,7 @@ int main(int argc, char** argv) {
     } else if (equals(instruction, "get-current-branch")) {
         //./myGit get-current-branch
         char *str = getCurrentBranch();
-        printf("Current branch : %s\n", str);
+        printf("Current branch : %s", str);
         free(str);
     } else if (equals(instruction, "branch")) {
         //./myGit branch <branch-name>
@@ -121,6 +128,50 @@ int main(int argc, char** argv) {
             exit(-1);
         }
         myGitCheckoutCommit(argv[2]);
+    } else if (equals(instruction, "merge")) {
+        //./myGit merge <branch> <message>
+        if (argc < 3) {
+            fprintf(stderr,"Utilisation : %s merge <branch> <message>\n", programme);
+            exit(-1);
+        }
+        char* remote_branch = argv[2];
+        char* msg = (argc >= 4 ? argv[3] : "");
+        List* conflicts = merge(remote_branch, msg), *retry = NULL;
+        if (conflicts != NULL) {
+            int opt;
+            char* current_branch = getCurrentBranch();
+            fprintf(stderr,"\033[0;31m"); //Set the text to the color red
+            fprintf(stderr,"Merge error\n"); 
+            fprintf(stderr,"\033[0;33m");
+            fprintf(stderr,"Select one of the following : \n"); 
+            fprintf(stderr, "1. Save Files from Current Branch (a deletion commit will be done for %s) before merging\n", remote_branch);
+            fprintf(stderr, "2. Save Files from Branch %s (a deletion commit will be done for the current branch) before merging\n", remote_branch);
+            fprintf(stderr, "3. Save Files from Current Branch\n");
+            fprintf(stderr, "\033[0m");
+            scanf(" %d", &opt);
+            switch(opt) {
+                case 1:
+                    createDeletionCommit(remote_branch, conflicts, msg);
+                    retry = merge(remote_branch, msg);
+                break;
+                case 2:
+                    createDeletionCommit(current_branch, conflicts, msg);
+                    retry = merge(remote_branch, msg);
+                break;
+                case 3:
+                    fprintf(stderr,"npi\n");
+                break;
+                default:
+                    fprintf(stderr,"Operation aborted\n");
+                break;
+            }
+            if (retry != NULL) {
+                freeList(retry);
+                fprintf(stderr,"Error while merging\n");
+            }
+            free(current_branch);
+            freeList(conflicts);
+        }
     } else {
         fprintf(stderr, "command not found\n");
     }
