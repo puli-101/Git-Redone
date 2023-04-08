@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
     } else if (equals(instruction, "list-add")) { 
         WorkTree* wt = ftwt(".add");
         char* str = wtts(wt);
-        printf(".add : \n%s\n",str);
+        printf(".add : \n%s",str);
         free(str);
         freeWorkTree(wt);
     } else if (equals(instruction, "clear-add")) { 
@@ -152,10 +152,12 @@ int main(int argc, char** argv) {
             switch(opt) {
                 case 1:
                     createDeletionCommit(remote_branch, conflicts, msg);
+                    printf("\033[0;32mDeletion commit created\n\033[0;33m"); 
                     retry = merge(remote_branch, msg);
                 break;
                 case 2:
                     createDeletionCommit(current_branch, conflicts, msg);
+                    printf("\033[0;32mDeletion commit created\n\033[0;33m"); 
                     retry = merge(remote_branch, msg);
                 break;
                 case 3:
@@ -176,4 +178,4 @@ int main(int argc, char** argv) {
         fprintf(stderr, "command not found\n");
     }
     return 0;
-}
+}  

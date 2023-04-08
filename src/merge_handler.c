@@ -37,7 +37,6 @@ WorkTree* getWokTreeFromBranchName(char* branch) {
     char* wt_path = hashToPathExtension(wt_hash, ".t");
     wt = ftwt(wt_path);
     free(wt_path);
-    free(wt_hash);
     free(commit_hash);
     free(commit_path);
     freeCommit(commit);
