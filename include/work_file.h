@@ -1,12 +1,7 @@
 #ifndef WORK_FILE_H
 #define WORK_FILE_H
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "utilities.h"
 #include "file_hash.h"
 #define WF_STR_SIZE 700
 #define WF_TREE_SIZE 200

@@ -67,11 +67,15 @@ void myGitCommit(char* branch_name, char* message) {
     char* head_commit = getRef("HEAD");
     if (strcmp(head_commit,last_commit) != 0) { //s'ils ne pointent pas vers la meme chose
         fprintf(stderr, "HEAD doit pointer sur le dernier commit de la branche\n");
+        free(last_commit);
+        free(head_commit);
         exit(-1);
     }
     
     if (access(".add", F_OK) != 0) {
         fprintf(stderr, "No files to be committed\n");
+        free(last_commit);
+        free(head_commit);
         exit(-1);
     }
     WorkTree* wt = ftwt(".add");
@@ -91,6 +95,8 @@ void myGitCommit(char* branch_name, char* message) {
     createUpdateRef(branch_name, hashCommit);
     createUpdateRef("HEAD", hashCommit);
 
+    freeCommit(c);
+    freeWorkTree(wt);
     free(hashCommit);
     free(hashWT);
     free(last_commit);

@@ -2,11 +2,8 @@
 #define LIST_H
 #define LIST_STR_SIZE 1000
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <dirent.h>
-#include <assert.h>
+#include "utilities.h"
+
 typedef struct cell {
     char* data ;
     struct cell * next ;

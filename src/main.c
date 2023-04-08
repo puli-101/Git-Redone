@@ -3,10 +3,7 @@
 #include "list.h"
 #include "branch_handler.h"
 #include "merge_handler.h"
-
-int equals(char* str1, char* str2) {
-    return !strcmp(str1, str2);
-}
+#include "utilities.h"
 
 int main(int argc, char** argv) {
     if (argc == 1) {
@@ -95,7 +92,7 @@ int main(int argc, char** argv) {
         } else if (argc == 3) {
             myGitCommit(argv[2], NULL);
         } else {
-            fprintf(stderr,"Format error\nUtilisation : %s commit <branch_name> [-m <message>]\n", programme);
+            fprintf(stderr,"Format error\nSyntax : %s commit <branch_name> [-m <message>]\n", programme);
         }
     } else if (equals(instruction, "get-current-branch")) {
         //./myGit get-current-branch
@@ -212,6 +209,7 @@ int main(int argc, char** argv) {
             freeList(retry);
             free(current_branch);
             freeList(conflicts);
+            printf("\033[0;32mMerge successful\n \033[0m"); 
         }
     } else {
         fprintf(stderr, "command not found\n");

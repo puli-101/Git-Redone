@@ -1,9 +1,7 @@
 #ifndef REFERENCE_HANDLER_H
 #define REFERENCE_HANDLER_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include "utilities.h"
 #include "commit_handler.h"
 #include "work_file.h"
 

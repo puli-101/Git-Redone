@@ -3,9 +3,7 @@
 
 #include "reference_handler.h"
 #include "list.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "utilities.h"
 
 void initBranch();
 

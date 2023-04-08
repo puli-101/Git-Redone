@@ -31,6 +31,10 @@ WorkTree* getWokTreeFromBranchName(char* branch) {
     */
     WorkTree* wt;
     char* commit_hash = getRef(branch);
+    if (commit_hash == NULL) {
+        print_color(stderr,"Branch doesn't exist","red");
+        exit(-1);
+    }
     char* commit_path = hashToPathExtension(commit_hash, ".c");
     Commit* commit = ftc(commit_path);
     char* wt_hash = commitGet(commit,"tree");
@@ -77,6 +81,8 @@ List* merge(char* remote_branch, char* message) {
         free(merged_predecessor);
         free(predecessor);
     }
+    freeWorkTree(current_wt);
+    freeWorkTree(remote_wt);
     freeWorkTree(fusion);
     free(current_branch);
     return conflicts;

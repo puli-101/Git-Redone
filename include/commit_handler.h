@@ -4,9 +4,8 @@
 #include "list.h"
 #include "file_hash.h"
 #include "work_file.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "utilities.h"
+
 #define MAX_COMMIT 1000
 #define COMMIT_STR 10000
 typedef struct key_value_pair {

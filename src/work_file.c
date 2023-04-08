@@ -259,6 +259,12 @@ int is_regular_file(const char *path) {
     return S_ISREG(path_stat.st_mode);
 }
 
+int is_folder(const char *path) {
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISDIR(path_stat.st_mode);
+}
+
 char* saveWorkTree(WorkTree* wt, char* path) {
     char file_path[WF_STR_SIZE * 2];
     char* file;
@@ -276,7 +282,7 @@ char* saveWorkTree(WorkTree* wt, char* path) {
             //on recupere le hash du fichier 
             wt->tab[i].hash = sha256file(file);
 
-        } else {    //on suppose qu'il n'y a pas de tubes ni de links
+        } else if (is_folder(file)) {    //on suppose qu'il n'y a pas de tubes ni de links
             printf("\tSaving directory %s\n", file);
             WorkTree* new_wt = initWorkTree();
             List* l = listdir(file);
