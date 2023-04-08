@@ -51,7 +51,7 @@ List* merge(char* remote_branch, char* message) {
     WorkTree* remote_wt = getWokTreeFromBranchName(remote_branch);
     WorkTree* fusion = mergeWorkTrees(current_wt, remote_wt, &conflicts);
 
-    if (conflicts == NULL) {
+    if (*conflicts == NULL) {
         Commit* c = initCommit();
         //on recupere les predecesseurs
         char* merged_predecessor = getRef(remote_branch);

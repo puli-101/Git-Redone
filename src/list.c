@@ -118,3 +118,9 @@ void freeList(List* L) {
     }
     free(L);
 }
+
+void printList(List* L) {
+    char* str = ltos(L);
+    printf("%s\n",str);
+    free(str);
+}

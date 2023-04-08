@@ -36,4 +36,6 @@ List* ftol(char* path);
 
 void freeList(List* L);
 
+void printList(List* L);
+
 #endif

@@ -37,6 +37,7 @@ int main(int argc, char** argv) {
         initRefs();
         initBranch();
     } else if (equals(instruction, "list-refs")) {
+        //./myGit list-refs
         List* l = listdir(".refs");
         if (l != NULL) {
             Cell* element = *l;
@@ -52,24 +53,27 @@ int main(int argc, char** argv) {
             fprintf(stderr,"Directory .refs does not exist\n");
         }
     } else if (equals(instruction, "create-ref")) {
+        //./myGit create-ref <name> <hash>
         if (argc != 4) {
             fprintf(stderr,"Utilisation : %s create-ref <name> <hash>\n", programme);
             exit(-1);
         }
         createUpdateRef(argv[2], argv[3]);
     } else if (equals(instruction, "delete-ref")) {
+        //./myGit delete-ref <name>
         if (argc != 3) {
             fprintf(stderr, "Utilisation : %s delete-ref <name>", programme);
             exit(-1);
         }
         deleteRef(argv[2]);
     } else if (equals(instruction, "add")) {
+        //./myGit add <files>
         if (argc < 3) {
             fprintf(stderr, "Utilisation : %s add <elem> [<elem2> <elem3> ...]", programme);
             exit(-1);
         }
-        
-        for (int i = 2; i < argc; i++) {
+        //on ajoute fichier par fichier
+        for (int i = 2; i < argc; i++) {    
             char* file = argv[i];
             myGitAdd(file);
         }
@@ -91,7 +95,7 @@ int main(int argc, char** argv) {
         } else if (argc == 3) {
             myGitCommit(argv[2], NULL);
         } else {
-            fprintf(stderr,"Format error\n");
+            fprintf(stderr,"Format error\nUtilisation : %s commit <branch_name> [-m <message>]\n", programme);
         }
     } else if (equals(instruction, "get-current-branch")) {
         //./myGit get-current-branch
@@ -137,40 +141,75 @@ int main(int argc, char** argv) {
         char* remote_branch = argv[2];
         char* msg = (argc >= 4 ? argv[3] : "");
         List* conflicts = merge(remote_branch, msg), *retry = NULL;
-        if (conflicts != NULL) {
+        if (*conflicts != NULL) {
             int opt;
             char* current_branch = getCurrentBranch();
+            //if there is a file overlap we have to choose how to solve the conflict (choose which branch to keep the files in)
             fprintf(stderr,"\033[0;31m"); //Set the text to the color red
-            fprintf(stderr,"Merge error\n"); 
+            fprintf(stderr,"! Merge error - one or multiple files are in conflict\n"); 
             fprintf(stderr,"\033[0;33m");
             fprintf(stderr,"Select one of the following : \n"); 
             fprintf(stderr, "1. Save Files from Current Branch (a deletion commit will be done for %s) before merging\n", remote_branch);
             fprintf(stderr, "2. Save Files from Branch %s (a deletion commit will be done for the current branch) before merging\n", remote_branch);
-            fprintf(stderr, "3. Save Files from Current Branch\n");
+            fprintf(stderr, "3. Choose files manually\n");
             fprintf(stderr, "\033[0m");
             scanf(" %d", &opt);
             switch(opt) {
                 case 1:
                     createDeletionCommit(remote_branch, conflicts, msg);
-                    printf("\033[0;32mDeletion commit created\n\033[0;33m"); 
+                    printf("\033[0;32mDeletion commit created\n \033[0m"); 
                     retry = merge(remote_branch, msg);
                 break;
                 case 2:
                     createDeletionCommit(current_branch, conflicts, msg);
-                    printf("\033[0;32mDeletion commit created\n\033[0;33m"); 
+                    printf("\033[0;32mDeletion commit created\n \033[0m"); 
                     retry = merge(remote_branch, msg);
                 break;
                 case 3:
-                    fprintf(stderr,"npi\n");
+                    List* current_conflicts = initList();
+                    List* remote_conflicts = initList();
+                    char destination[300];
+                    printf("Choose which file's version to keep\n");
+                    for (Cell* e = *conflicts; e != NULL; e = e->next) {
+                        top: char* file = e->data;
+                        //on choisi la branche associee a la version du fichier qu'on veut conserver
+                        printf("\033[0;33mFile %s ? (%s | %s or q to quit) : \033[0m", file, current_branch, remote_branch);
+                        scanf(" %s", destination);
+                        //et on l'insere en tete de la liste
+                        if (equals(current_branch, destination)) {
+                            //si on choisi la version de la branche actuel alors c'est un conflit pour la branche remote
+                            insertFirst(remote_conflicts, buildCell(file));
+                        } else if (equals(remote_branch, destination)) {
+                            //idem
+                            insertFirst(current_conflicts, buildCell(file));
+                        } else if (equals(destination, "q")) {
+                            fprintf(stderr,"\033[0;31mOperation aborted\n\033[0m");
+                            free(current_branch);
+                            freeList(conflicts);
+                            freeList(current_conflicts);
+                            freeList(remote_conflicts);
+                            exit(0);
+                        } else {
+                            //on ressaie
+                            //nous utilisons goto uniquement pour éviter d'ajouter un niveau d'indentation inutile
+                            goto top; 
+                        }
+                    }
+                    printf("\033[0m");
+                    createDeletionCommit(current_branch, current_conflicts, msg);
+                    createDeletionCommit(remote_branch, remote_conflicts, msg);
+                    printf("\033[0;32mTwo deletion commits created\n \033[0m"); 
+                    retry = merge(remote_branch, msg);
+                    freeList(current_conflicts);
+                    freeList(remote_conflicts);
                 break;
                 default:
-                    fprintf(stderr,"Operation aborted\n");
+                    fprintf(stderr,"\033[0;31mOperation aborted\n\033[0m");
                 break;
             }
-            if (retry != NULL) {
-                freeList(retry);
-                fprintf(stderr,"Error while merging\n");
-            }
+            if (*retry != NULL)
+                fprintf(stderr,"\033[0;31mError while merging\n\033[0m");
+            freeList(retry);
             free(current_branch);
             freeList(conflicts);
         }
