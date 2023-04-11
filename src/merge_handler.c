@@ -1,5 +1,13 @@
 #include "merge_handler.h"
 
+/**
+ * La fonction renvoie unpointeur sur un worktree alloué qui contient dans sa table
+ * les workfiles qui ne sont pas présentes dans wt1 et wt2. À la fin de la fonction 
+ * conflicts era un double pointeur sur une liste contennant les noms des workfiles 
+ * présents dans le wt1 et wt2.
+ * On considère qu'un workfile wf est dans wt1 et wt2 si les deux worktrees ont un 
+ * workfile avec le hash de wf.
+ */
 WorkTree* mergeWorkTrees(WorkTree* wt1, WorkTree* wt2, List** conflicts) {
     *conflicts = initList();
     WorkTree* wt = initWorkTree();
@@ -25,12 +33,15 @@ WorkTree* mergeWorkTrees(WorkTree* wt1, WorkTree* wt2, List** conflicts) {
     return wt;
 }
 
+/**
+ * 
+ */
 WorkTree* getWokTreeFromBranchName(char* branch) {
     /*
         a partir de la reference il faut extraire l'adresse du worktree du commit associe
     */
     WorkTree* wt;
-    char* commit_hash = getRef(branch);
+    char* commit_hash = getRef(branch); //si branch absente dans ref?
     char* commit_path = hashToPathExtension(commit_hash, ".c");
     Commit* commit = ftc(commit_path);
     char* wt_hash = commitGet(commit,"tree");

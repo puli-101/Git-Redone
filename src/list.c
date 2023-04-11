@@ -23,6 +23,8 @@ char* ctos(Cell* c) {
     return c->data;
 }
 
+/*renvoie la concatenation des informations d'une liste, les éléments sont
+ séparés par "|" */
 char* ltos(List* L) {
     char* str = malloc(sizeof(char) * LIST_STR_SIZE);
     str[0] = '\0';
@@ -56,6 +58,7 @@ Cell* searchList(List* L, char* str) {
     return NULL;
 }
 
+/**Reconstruit une liste à partir d'une chaine de charactères */
 List* stol(char* s) {
     char buff[LIST_STR_SIZE];
     int buf_i = 0;  //compteur de la taille du mot
@@ -82,6 +85,7 @@ List* stol(char* s) {
     return l;
 }
 
+/*list-to-file: Écrit sur le fichier path la chaine de charactères représentant la liste */
 void ltof(List* L, char* path) {
     FILE* f = fopen(path, "w");
     if (f == NULL) {
@@ -94,6 +98,7 @@ void ltof(List* L, char* path) {
     fclose(f);
 }
 
+/**File-to-list: Lit un fichier et renvoie un pointeur sur une liste qui contient son contenu */
 List* ftol(char* path) {
     FILE* f = fopen(path, "r");
     if (f == NULL) {
