@@ -5,14 +5,16 @@ OBJECTS = obj/list.o obj/file_hash.o obj/worktree_handler.o obj/commit_handler.o
 all: bin/main_test bin/main
 
 #rm -Rf ??
+#mkdir -p ../projet_tests
+#cp -r * ../projet_tests/
 bin/%: src/%.c $(OBJECTS)
 	rm -f tmp*
+	mkdir -p bin
 	gcc -g -o $@ $^ $(FLAGS)
-	mkdir -p ../projet_tests
-	cp -r * ../projet_tests/
 
 obj/%.o: src/%.c include/%.h
+	mkdir -p obj/
 	gcc -c -g -o $@ $< $(FLAGS)
 
 clean:
-	rm -Rf bin/main obj/*.o tmp* ?? .refs .add .current_branch bin/main_test
+	rm -Rf bin/* obj/*.o tmp* ?? .refs .add .current_branch bin/main_testmake
