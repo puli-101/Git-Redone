@@ -11,7 +11,7 @@
 #include <assert.h>
 #include "file_hash.h"
 
-#define STR_SIZE 500
+#define STR_SIZE 300
 
 void print_color(FILE* output, char* msg, char* color);
 

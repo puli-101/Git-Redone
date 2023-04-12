@@ -3,7 +3,7 @@
 
 #include "utilities.h"
 #include "file_hash.h"
-#define WF_STR_SIZE 700
+#define WF_STR_SIZE 500
 #define WF_TREE_SIZE 200
 typedef struct {
     char* name;

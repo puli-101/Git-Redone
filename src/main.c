@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
     } else if (equals(instruction, "get-current-branch")) {
         //./myGit get-current-branch
         char *str = getCurrentBranch();
-        printf("Current branch : %s", str);
+        printf("Current branch : %s\n", str);
         free(str);
     } else if (equals(instruction, "branch")) {
         //./myGit branch <branch-name>
@@ -143,8 +143,7 @@ int main(int argc, char** argv) {
             int opt;
             char* current_branch = getCurrentBranch();
             //if there is a file overlap we have to choose how to solve the conflict (choose which branch to keep the files in)
-            fprintf(stderr,"\033[0;31m"); //Set the text to the color red
-            fprintf(stderr,"! Merge error - one or multiple files are in conflict\n"); 
+            print_color(stderr, "! Merge error - one or multiple files are in conflict", "red");
             fprintf(stderr,"\033[0;33m");
             fprintf(stderr,"Select one of the following : \n"); 
             fprintf(stderr, "1. Save Files from Current Branch (a deletion commit will be done for %s) before merging\n", remote_branch);

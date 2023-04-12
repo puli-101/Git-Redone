@@ -61,7 +61,7 @@ WorkTree* getWorkTreeFromBranchName(char* branch) {
 }
 
 /**
- *  Si il n'y a pas des conflits entre la remote branch et la nouvelle branche, 
+ *  Si il n'y a pas des conflits entre la remote branch et la branche actuelle, 
  * Un worktree wt contenant les fichiers des deux branches est alloué.
  * Un commit  ayant pour worktree  wt est crée et la current branch est actualisée,
  * elle pointe maintenant à ce nouveau commit. 

@@ -1,6 +1,6 @@
 #ifndef LIST_H
 #define LIST_H
-#define LIST_STR_SIZE 1000
+#define LIST_STR_SIZE 500
 
 #include "utilities.h"
 

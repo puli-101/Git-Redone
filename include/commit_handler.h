@@ -7,7 +7,7 @@
 #include "utilities.h"
 
 #define MAX_COMMIT 1000
-#define COMMIT_STR 10000
+#define COMMIT_STR 1000
 typedef struct key_value_pair {
     char * key ;
     char * value ;

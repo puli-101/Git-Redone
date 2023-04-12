@@ -89,6 +89,12 @@ void printBranch(char* branch) {
 List * branchList(char* branch) {
     List* l = initList();
     char* commit_hash = getRef(branch);
+    if (commit_hash == NULL || commit_hash[0] == '\0') {
+        *l = NULL;
+        if (commit_hash != NULL)
+            free(commit_hash);
+        return l;
+    }
     char* path = hashToPathExtension(commit_hash, ".c");
     Commit *c = ftc(path);
     while(c) {
@@ -152,17 +158,14 @@ void myGitCheckoutBranch(char* branch) {
     fclose(f);
 
     char* commit_hash = getRef(branch);
-    if (commit_hash == NULL || commit_hash[0] == '\0') {
+    if (commit_hash == NULL) {
         fprintf(stderr,"Invalid branch %s\n",branch);
-        if (commit_hash != NULL) {
-            print_color(stderr,"Branch is empty","red");
-            free(commit_hash);
-        }
         return;
     }
     createUpdateRef("HEAD", commit_hash);
 
-    restoreCommit(commit_hash);
+    if (commit_hash[0] != '\0')
+        restoreCommit(commit_hash);
     free(commit_hash);
 }
 

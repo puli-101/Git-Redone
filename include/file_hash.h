@@ -2,7 +2,7 @@
 #define FILE_HASH_H
 
 #include "list.h"
-#define HASH_STR_SIZE 500
+#define HASH_STR_SIZE 300
 
 //ecrit le hash du fichier source dans le fichier dest
 int hashFile(char* source, char* dest);
