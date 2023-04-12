@@ -42,6 +42,7 @@ char* sha256file(char* file) {
 	return sha;
 }
 
+//Renvoie une liste ou chaque cellule contient le nom d'un élément du répertoire
 List* listdir(char* root_dir) {
     DIR * dp = opendir ( root_dir ) ;
     List* l = initList();
@@ -73,6 +74,7 @@ int file_exists(char *file) {
     return 0;
 }
 
+/*Copie le contenu du fichier from au fichier to*/
 void cp(char *to, char *from) {
     FILE* src = fopen(from, "r");
     if (!src) {
@@ -112,6 +114,8 @@ char* hashToPath(char* hash) {
     return path;
 }
 
+/*Va créer une copie du fichier qui portera le nom du fichier haché et sera stocké
+dans un nouveau repertoire nomé avec les premiers deux charactéres du fichier haché*/
 void blobFile(char* file) {
     //On recupere l'adresse correspondant au fichier instantanee
     char* hash = sha256file(file);

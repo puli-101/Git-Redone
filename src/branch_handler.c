@@ -1,21 +1,34 @@
 #include "branch_handler.h"
 
+/**
+ * Duplique le master dans le fichier caché current_branch.
+ */
 void initBranch() {
     system("echo master > .current_branch");
 }
 
+/**
+ * Vérifie si la branche branch existe dans le répertoire de références. 
+ */
 int branchExists(char* branch) {
     char buff[300] = ".refs/";
     strcat(buff,branch);
     return access(buff, F_OK) == 0;
 }
 
+/**
+ * Fait que le head pointe dans la branche indiquée. 
+ */
 void createBranch(char* branch) {
     char* ref = getRef("HEAD");
     createUpdateRef(branch, ref);
     free(ref);
 }
 
+/**
+ * Alloue un espace de mémoire pour garder et renvoyer un pointeur sur le hash du dernier commit qui 
+ * est stocké aussi dans le master en théorie. 
+ */
 char* getCurrentBranch() {
     FILE* f = fopen(".current_branch", "r");
     assert(f != NULL);
@@ -26,12 +39,23 @@ char* getCurrentBranch() {
 }
 
 //utilities.h
+/**
+ *Alloue et renvoie la direction d'un fichier à partir de son hash et ajoute l'extension indiquée à 
+ *la fin de l'adresse.
+ */
 char* hashToPathExtension(char* hash, char* extension) {
     char* str = hashToPath(hash);
     strcat(str,extension);
     return str;
 }
 
+/**
+ *  Pour une branche, la fonction va afficher le message et le hash de tous les commits de la branche.
+ * L'affichage est effectué en allant du plus nouveau des commits au plus vieux des commits.
+ * des commits de la branche. Les informations sont présentées sous la forme:
+ * Hash: ...
+ * Message: ...
+ */
 void printBranch(char* branch) {
     char* commit_hash = getRef(branch);
     if (!commit_hash) return;
@@ -68,7 +92,13 @@ void printBranch(char* branch) {
     }
 }
 
-List* branchList(char* branch) {
+/**
+ * Initialise et alloue l'espace de mémoire pour rendre le pointeur sur une liste contenant
+ * dans ces cellules les hash des commits de la branche branch.
+ * Les commits dans la liste vont être ordonnées dans leur ordre chronologique (Le plus vieux dans
+ * la tête de la liste.)
+ */
+List * branchList(char* branch) {
     List* l = initList();
     char* commit_hash = getRef(branch);
     char* path = hashToPathExtension(commit_hash, ".c");
@@ -98,6 +128,12 @@ List* branchList(char* branch) {
     return l;
 }
 
+/**
+ * Cette fonction renvoie un pointeur sur une liste avec tous les commits de toutes les branches
+ * de ./refs .La fonction va parcourir les listes de commits de chaque branche et ajouter les commits dans 
+ * une liste L si ils ne sont pas déjà dans la liste.
+ * La fonction renvoie le pointeur de L.
+ */
 List* getAllCommits() {
     List* l = initList();
     List* refs = listdir(".refs");
@@ -117,6 +153,9 @@ List* getAllCommits() {
     return l;
 }
 
+/**
+ * La fonction va chercher le worktree du commit de hash commit et le restaurer.
+ */
 void restoreCommit(char* hash_commit) {
     char *commit_path = hashToPathExtension(hash_commit, ".c") ;
     Commit *c = ftc (commit_path);
@@ -135,6 +174,11 @@ void restoreCommit(char* hash_commit) {
     free(wt_path);
 }
 
+/**
+ * LA fonction va écrire le nom de la branche branch sur ".current_branch",
+ * elle actualise aussi HEAD pour qu'il pointe sur la nouvelle branche courrante.
+ * Un message d'erreur est affiché si la branche branch n'existe pas dans ./refs.
+ */
 void myGitCheckoutBranch(char* branch) {
     FILE* f = fopen(".current_branch", "w");
     fprintf(f, "%s", branch);
@@ -151,6 +195,10 @@ void myGitCheckoutBranch(char* branch) {
     free(commit_hash);
 }
 
+/**
+ * La fonction renvoie 1 si le paramètre prefix est un prefixe du paramètre word.
+ * Au cas contraire un 0 est renvoyé.
+ */
 int isPrefix(char* prefix, char* word) {
     for (int i = 0; prefix[i] != '\0'; i++) {
         if (word[i] == '\0' || prefix[i] != word[i])
@@ -159,6 +207,11 @@ int isPrefix(char* prefix, char* word) {
     return 1;
 }
 
+/**
+ * Renvoie un pointeur sur une sous liste l de L où toutes les cellules de l ont pour
+ * préfixe les charactères du paramètre pattern. La fonction fait une copie des éléments de 
+ * L.
+ */
 List* filterList(List* L, char* pattern) {
     List* l = initList();
     for (Cell* e = *L; e != NULL; e = e->next) {
@@ -170,6 +223,12 @@ List* filterList(List* L, char* pattern) {
     return l;
 }
 
+/**
+ * Selon le patron inséré en paramètres, la fonction va afficher la liste des commits qui suivent
+ * ont pour préfixe pattern dans leur hash. S'il ne reste qu'un commit ayant le patron pour préfixe, la
+ * Head va pointer sur ce commit et ce Commit est restauré.
+ * Si aucun commit a pour préfixe pattern un message d'erreur est affiché.
+ */
 void myGitCheckoutCommit(char* pattern) {
     List* all_commits = getAllCommits();
     List* filter = filterList(all_commits, pattern);

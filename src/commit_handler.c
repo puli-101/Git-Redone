@@ -1,5 +1,7 @@
 #include "commit_handler.h"
-
+/**
+ * Alloue l'espace pour un kvp et crée la kvp correpondant aux données saisies en arguments
+ */
 kvp* createKeyVal(char* key, char* val) {
     kvp* kv = (kvp*)malloc(sizeof(kvp));
     kv->key = strdup(key);
@@ -13,6 +15,7 @@ void freeKeyVal(kvp* kv) {
     free(kv);
 }
 
+/*kvp to string: alloue et renvoie la chaine de charactères correspendant à la kvp*/
 char* kvts(kvp* k) {
     char* str = (char*)malloc(sizeof(char) * (COMMIT_STR / 10));
     //format : key : value
@@ -20,6 +23,7 @@ char* kvts(kvp* k) {
     return str;
 }
 
+/*String to kvp:*/
 kvp* stkv(char* str) {
     char key[(COMMIT_STR / 10)];
     char val[(COMMIT_STR / 10)];
@@ -30,6 +34,7 @@ kvp* stkv(char* str) {
 
     return kv;
 }
+
 
 Commit* initCommit() {
     Commit* c = (Commit*)malloc(sizeof(Commit));
@@ -43,6 +48,9 @@ Commit* initCommit() {
     return c;
 }
 
+/*Ajoute une kvp à la table d'hachage du commit c si possible.
+Les collisions de notre table d'hachage sont gerées par 
+adressage ouvert linéaire.*/
 void commitSet(Commit* c, char* key, char* value) {
     if (c->size >= c->n) return;
     unsigned long index = hash((unsigned char*)key) % MAX_COMMIT;
@@ -70,6 +78,9 @@ void commitSet(Commit* c, char* key, char* value) {
 }
 
 //hash 33
+/**
+ * Fonction d'hachage choisie:
+ */
 unsigned long hash(unsigned char *str) {
     unsigned long hash = 5381;
     int c;
@@ -80,6 +91,9 @@ unsigned long hash(unsigned char *str) {
     return hash;
 }
 
+/**Initilialise et alloue un nouveau commit pour renvoyer un pointeur de ce commit
+ * La table d'hachage du commit contiendra une kvp de valeur ("tree" : hash).
+*/
 Commit* createCommit(char* hash) {
     Commit* c = initCommit();
     commitSet(c,"tree", hash);
@@ -87,10 +101,10 @@ Commit* createCommit(char* hash) {
 }
 
 /** 
- * On recupere la valeur associe a key
- * On suppose qu'on ne peut pas supprimer des elements du tableau
+ * On recupere la valeur associée à key
+ * On suppose qu'on ne peut pas supprimer des éléments du tableau
  * alors la premiere case vide qu'on retrouve lors du parcours implique 
- * que l'element de cle key n'est pas present
+ * que l'élément de cle key n'est pas présent
 */
 char* commitGet(Commit* c, char* key) {
     int index = hash((unsigned char*)key) % MAX_COMMIT, i = (index + 1) % MAX_COMMIT;
@@ -148,12 +162,14 @@ char* extractLine(char* line, char** buff) {
     return *buff;
 }
 
+/** string to commit:
+*/
 Commit* stc(char* ch) {
     Commit* c = initCommit();
     char ligne[COMMIT_STR];
     char key[COMMIT_STR];
     char val[COMMIT_STR];
-    
+
     while(extractLine(ligne, &ch)) {
         sscanf(ligne, " %s : %s", key, val);
         commitSet(c, key, val);
@@ -193,6 +209,10 @@ void castCommitToFile(void * obj, char* file) {
     ctf((Commit*)obj, file);
 }
 
+/**
+ * Crée  une copie instantanée du commit nomée d'apres le hash du commit et 
+ * renvoie le hash du nouveau commit.
+ */
 char* blobCommit(Commit* c) {
     return blobContent((void*) c, ".c", castCommitToFile);
 }

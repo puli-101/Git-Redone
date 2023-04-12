@@ -1,11 +1,19 @@
 #include "reference_handler.h"
-
+/**
+ * Cette fonction va créer le repertoire caché de reférences si il n'existe pas.
+ * Dans ce repertoire, les fichiers vides  Head et Master sont crées.
+ */
 void initRefs() {
     system("mkdir -p .refs");
     system("touch .refs/master");
     system("touch .refs/HEAD");
 }
 
+/**
+ *Le fichier de nom ref_name est ouvert ou crée s'il n'existe pas dans le repertoire de 
+ *références. hash est écrit dessus ce fichier. Maintenant il est une référence correspondant 
+ *à un fichier ayant ce hash. 
+ */
 void createUpdateRef(char* ref_name, char* hash) {
     char buff[300] = ".refs/";
     strcat(buff,ref_name);
@@ -14,12 +22,21 @@ void createUpdateRef(char* ref_name, char* hash) {
     fclose(f);
 }
 
+/**
+ * Élimine la reférence mise en paramètres.
+ */
 void deleteRef(char* ref_name) {
     char cmd[500];
     sprintf(cmd,"rm -f .refs/%s", ref_name);
     system(cmd);
 }
 
+/**
+ * Pour une référence existante dans ./refs, la référence ref_name est ouverte.
+ * Son contenu est lu et alloué dans une chaine de caractères de taille maximale 500.
+ * La fonction renvoie cette chaine de caractères si le fichier existe. Si non un message
+ * d'erreur est affiché.
+ */
 char* getRef(char* ref_name) {
     char buff[300] = ".refs/";
     strcat(buff,ref_name);
@@ -39,6 +56,14 @@ char* getRef(char* ref_name) {
     }
 }
 
+/**
+ * Va créer o un worktree correspondant à notre zone de préparation, c'est à dire
+ * le repertoire chaché ./add .
+ * Le fichier en paramètres sera ajouté à ce worktree si possible.
+ * La zone de préparation sera actualisé et le document file_ro_folder sera inclus dans
+ * la zone.
+ * Si file_or_folder n'existe pas un message d'erreur est affiché.
+ */
 void myGitAdd(char* file_or_folder) {
     system("touch .add");
     if (access(file_or_folder, F_OK) == 0) {
@@ -51,6 +76,14 @@ void myGitAdd(char* file_or_folder) {
     }
 }
 
+/**
+ *Pour que la fonction fonctionne il faut que Head et brach name existent et aient le même contenu.
+ *Les répertoires ./add et ./refs doivent exister. Si non un message d'erreur est affiché.
+ * La fonciton va créer un worktree de ./add et le sauvegarder. 
+ * La zone de préparation sera eliminé et un commit représentant (par so hash) le worktree sauvegardé est 
+ * crée. Ce commit est suvegardé et ajouté au début de  la branche branch_name. Le head est placé sur le 
+ * nouveau commit.
+ */
 void myGitCommit(char* branch_name, char* message) {
     if (access(".refs", F_OK) != 0) {
         fprintf(stderr,"Initialiser d'abord les references du projet\n");
