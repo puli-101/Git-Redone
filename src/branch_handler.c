@@ -175,9 +175,9 @@ void restoreCommit(char* hash_commit) {
 }
 
 /**
- * Va écrire le nom de la branche mise en paramètre dans le fichier ".current_branch"
- * et elle actuelise HEAD pour qu'elle point sur la nouvelle branche courrante.
- * Un message d'erreur est affiché si la branche n'existe pas dans ./refs.
+ * LA fonction va écrire le nom de la branche branch sur ".current_branch",
+ * elle actualise aussi HEAD pour qu'il pointe sur la nouvelle branche courrante.
+ * Un message d'erreur est affiché si la branche branch n'existe pas dans ./refs.
  */
 void myGitCheckoutBranch(char* branch) {
     FILE* f = fopen(".current_branch", "w");

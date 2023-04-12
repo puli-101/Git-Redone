@@ -34,9 +34,11 @@ WorkTree* mergeWorkTrees(WorkTree* wt1, WorkTree* wt2, List** conflicts) {
 }
 
 /**
- * 
+ * Alloue un espace mémoire pour recontruire et 
+ * renvoyer un pointeur du worktree du dernier 
+ * commit de la branche branch
  */
-WorkTree* getWokTreeFromBranchName(char* branch) {
+WorkTree* getWorkTreeFromBranchName(char* branch) {
     /*
         a partir de la reference il faut extraire l'adresse du worktree du commit associe
     */
@@ -54,12 +56,23 @@ WorkTree* getWokTreeFromBranchName(char* branch) {
     return wt;
 }
 
+/**
+ *  Si il n'y a pas des conflits entre la remote branch et la nouvelle branche, 
+ * Un worktree wt contenant les fichiers des deux branches est alloué.
+ * Un commit  ayant pour worktree  wt est crée et la current branch est actualisée,
+ * elle pointe maintenant à ce nouveau commit. 
+ * Ce commit aura pour prédecesseur le dernier commit de la branche courante et 
+ * additionellement il aura pour merged predecessor le dernier commit de remote_branch.
+ * Le HEAD va aussi pointer ver le nouveau commit. Finalement l'arbre wt est restauré.
+ * La fonction renvoie un pointeur sur la liste de conflits entre remote_branch et la 
+ * branche courrante. 
+ */
 List* merge(char* remote_branch, char* message) {
     List* conflicts = NULL;
     
     char* current_branch = getCurrentBranch();
-    WorkTree* current_wt = getWokTreeFromBranchName(current_branch); 
-    WorkTree* remote_wt = getWokTreeFromBranchName(remote_branch);
+    WorkTree* current_wt = getWorkTreeFromBranchName(current_branch); 
+    WorkTree* remote_wt = getWorkTreeFromBranchName(remote_branch);
     WorkTree* fusion = mergeWorkTrees(current_wt, remote_wt, &conflicts);
 
     if (*conflicts == NULL) {
@@ -93,12 +106,16 @@ List* merge(char* remote_branch, char* message) {
     return conflicts;
 }
 
+/**
+ * La fonction va créer un commit sur la branche branch où seulement les documents
+ * absents dans la liste de  conflits sont enregistrés par le worktree du commit.
+ */
 void createDeletionCommit(char* branch, List* conflicts, char* message) {
     char* current_branch = getCurrentBranch();
     myGitCheckoutBranch(branch);
     char* hash_commit = getRef(branch);
     system("rm -f .add");
-    WorkTree* wt = getWokTreeFromBranchName(branch);
+    WorkTree* wt = getWorkTreeFromBranchName(branch);
     for (int i = 0; i < wt->n; i++) {
         char* name = wt->tab[i].name;
         if (searchList(conflicts, name) == NULL) {

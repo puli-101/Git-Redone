@@ -1,11 +1,20 @@
 #include "list.h"
 
+/**
+ * Alloue un espace mémoire pour une Liste qui est initialisé avec la valeur
+ * NULL. Un pointeur sur cet espace est renvoyé.
+ */
 List* initList() {
     List* l = (List*)malloc(sizeof(List));
     *l = NULL;
     return l;
 }
 
+/**
+ * Construit et renvoie un pointeur sur une cellule d'une liste. 
+ * La cellule aura stocké en data les informations de ch et son
+ * pointeur next pointera sur NULL.
+ */
 Cell* buildCell(char* ch) {
     Cell* cell = (Cell*)malloc(sizeof(Cell));
     cell->data = strdup(ch);
@@ -13,12 +22,18 @@ Cell* buildCell(char* ch) {
 	return cell;
 }
 
+/**
+ * Insertion de C dans la tête de la liste L.
+ */
 void insertFirst(List *L, Cell* C) {
     if (L == NULL) return;
     C->next = *L;
     *L = C;
 }
 
+/**
+ * renvoie la chaine de charactères stocké dans la cellule c.
+ */
 char* ctos(Cell* c) {
     return c->data;
 }
@@ -38,6 +53,9 @@ char* ltos(List* L) {
     return str;
 }
 
+/**
+ * Renvoie un pointeur sur la cellule d'indice i de la liste L.
+ */
 Cell* listGet(List* L, int i) {
     Cell* tmp = *L;
     int j = 0;
@@ -48,6 +66,11 @@ Cell* listGet(List* L, int i) {
     return tmp;
 }
 
+/**
+ * Renvoie un pointeur de la première cellule de L dont sa chaine à charactères est
+ * identique à la chaine str. 
+ * Si cette cellule n'éxiste pas NULL est renvoyé.
+ */
 Cell* searchList(List* L, char* str) {
     Cell* tmp = *L;
     while(tmp) {
@@ -112,6 +135,9 @@ List* ftol(char* path) {
     return stol(buffer);
 }
 
+/**
+ * Libère tout l'espace pris par la Liste L et son contenu.
+ */
 void freeList(List* L) {
     if (!L) return;
     Cell* c = *L, *tmp;
@@ -124,6 +150,9 @@ void freeList(List* L) {
     free(L);
 }
 
+/**
+ * Affiche le contenu d'une Liste. Pour chaque cellule son contenu est affiché sur une ligne.
+ */
 void printList(List* L) {
     char* str = ltos(L);
     printf("%s\n",str);
