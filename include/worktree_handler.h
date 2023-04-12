@@ -1,5 +1,5 @@
-#ifndef WORK_FILE_H
-#define WORK_FILE_H
+#ifndef WORKTREE_HANDLER_H
+#define WORKTREE_HANDLER_H
 
 #include "utilities.h"
 #include "file_hash.h"

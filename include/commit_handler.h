@@ -3,7 +3,7 @@
 
 #include "list.h"
 #include "file_hash.h"
-#include "work_file.h"
+#include "worktree_handler.h"
 #include "utilities.h"
 
 #define MAX_COMMIT 1000

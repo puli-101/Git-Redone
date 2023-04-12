@@ -3,7 +3,7 @@
 
 #include "utilities.h"
 #include "commit_handler.h"
-#include "work_file.h"
+#include "worktree_handler.h"
 
 void initRefs();
 

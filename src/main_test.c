@@ -1,6 +1,6 @@
 #include "list.h"
 #include "file_hash.h"
-#include "work_file.h"
+#include "worktree_handler.h"
 #include "commit_handler.h"
 #include "reference_handler.h"
 #define STR_SIZE 500
