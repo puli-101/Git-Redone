@@ -1,1 +1,3 @@
 checkout commit : cambia de commit pero no necesariamente cambia el puntero de la rama actual
+
+el archivo tests/test.txt lo considera diferente a ./tests/test.txt porque los strings no coinciden

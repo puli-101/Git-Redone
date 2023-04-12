@@ -270,12 +270,6 @@ int is_folder(const char *path) {
     return S_ISDIR(path_stat.st_mode);
 }
 
-int is_folder(const char *path) {
-    struct stat path_stat;
-    stat(path, &path_stat);
-    return S_ISDIR(path_stat.st_mode);
-}
-
 /*La fonction va créer la copie de chaque élément de worktree sur le dossier indiqué par path.
 *Si l'élément est un fichier sa copie est faite par un blobfile et on remplace le hash 
 *du fichier dupliqué par le hash de sa copie.
