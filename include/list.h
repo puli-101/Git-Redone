@@ -7,9 +7,7 @@
 typedef struct cell {
     char* data ;
     struct cell * next ;
-} Cell ;
-
-typedef Cell* List ;
+} Cell, *List ;
 
 List* initList();
 
@@ -33,6 +31,10 @@ List* ftol(char* path);
 
 void freeList(List* L);
 
+List* filterList(List* L, char* pattern);
+
 void printList(List* L);
+
+List* listdir(char* root_dir);
 
 #endif

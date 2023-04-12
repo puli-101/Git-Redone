@@ -51,4 +51,6 @@ char* cts(Commit* c);
 
 char* blobCommit(Commit* c);
 
+void restoreCommit(char* hash_commit);
+
 #endif

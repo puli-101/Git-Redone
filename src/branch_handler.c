@@ -38,17 +38,6 @@ char* getCurrentBranch() {
     return current;
 }
 
-//utilities.h
-/**
- *Alloue et renvoie la direction d'un fichier à partir de son hash et ajoute l'extension indiquée à 
- *la fin de l'adresse.
- */
-char* hashToPathExtension(char* hash, char* extension) {
-    char* str = hashToPath(hash);
-    strcat(str,extension);
-    return str;
-}
-
 /**
  *  Pour une branche, la fonction va afficher le message et le hash de tous les commits de la branche.
  * L'affichage est effectué en allant du plus nouveau des commits au plus vieux des commits.
@@ -154,27 +143,6 @@ List* getAllCommits() {
 }
 
 /**
- * La fonction va chercher le worktree du commit de hash commit et le restaurer.
- */
-void restoreCommit(char* hash_commit) {
-    char *commit_path = hashToPathExtension(hash_commit, ".c") ;
-    Commit *c = ftc (commit_path);
-
-    char* wt_hash = strdup(commitGet (c , "tree"));
-    char *wt_path = hashToPathExtension(wt_hash, ".t");
-
-    WorkTree * wt = ftwt (wt_path);
-
-    restoreWorkTree(wt , ".");
-
-    freeCommit(c);
-    freeWorkTree(wt);
-    free(commit_path);
-    free(wt_hash);
-    free(wt_path);
-}
-
-/**
  * LA fonction va écrire le nom de la branche branch sur ".current_branch",
  * elle actualise aussi HEAD pour qu'il pointe sur la nouvelle branche courrante.
  * Un message d'erreur est affiché si la branche branch n'existe pas dans ./refs.
@@ -193,34 +161,6 @@ void myGitCheckoutBranch(char* branch) {
 
     restoreCommit(commit_hash);
     free(commit_hash);
-}
-
-/**
- * La fonction renvoie 1 si le paramètre prefix est un prefixe du paramètre word.
- * Au cas contraire un 0 est renvoyé.
- */
-int isPrefix(char* prefix, char* word) {
-    for (int i = 0; prefix[i] != '\0'; i++) {
-        if (word[i] == '\0' || prefix[i] != word[i])
-            return 0;
-    }
-    return 1;
-}
-
-/**
- * Renvoie un pointeur sur une sous liste l de L où toutes les cellules de l ont pour
- * préfixe les charactères du paramètre pattern. La fonction fait une copie des éléments de 
- * L.
- */
-List* filterList(List* L, char* pattern) {
-    List* l = initList();
-    for (Cell* e = *L; e != NULL; e = e->next) {
-        char* str = e->data;
-        if (isPrefix(pattern, str)) {
-            insertFirst(l, buildCell(str));
-        }
-    }
-    return l;
 }
 
 /**

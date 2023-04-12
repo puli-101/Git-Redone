@@ -188,66 +188,6 @@ void freeWorkTree(WorkTree* wt) {
     free(wt);
 }
 
-/**
- * Fonction qui a partir d'un objet quelconque et une fonction qui enregistre cet objet dans un fichier
- * cree une copie d'un instantanee associe au contenu de l'objet et retourne le hash du fichier
- * utilisee dans blobWorkTree et blobCommit
-*/
-char* blobContent(void* obj, char* extension, void (*toFile)(void*, char*)) {
-    static char template [] = "tmpXXXXXX" ;
-	char temp_obj_file [WF_STR_SIZE - 100]; //fichier temporaire dans lequel on enregistrera une copie de l'instantanee
-    char rep[3];
-    char* instantanee;
-	char cmd [WF_STR_SIZE];
-	char *sha = (char*)malloc(WF_STR_SIZE*sizeof(char));
-    char* hash;
-
-	if (sha == NULL) 
-		return NULL;
-	
-	strcpy (temp_obj_file , template) ;
-	
-	//On cree le fichier tmpX...
-	int fd = mkstemp (temp_obj_file) ;
-
-	if (fd == -1) {
-		free(sha);
-        close(fd);
-		return NULL;
-	}
-
-    close(fd);
-
-    //On stocke la version string du WorkTree dans le temp_obj_file
-    toFile(obj, temp_obj_file);
-
-    //On recupere le hash du workfile stocke dans temp_obj_file
-    sha = sha256file(temp_obj_file);
-
-    //On recupere l'adresse correspondant au fichier instantanee
-    hash = sha256file(temp_obj_file);
-    instantanee = hashToPath(hash);
-    free(hash);
-    
-    strcat(instantanee, extension);
-    //On recupere le nom du repertoire
-    rep[0] = instantanee[0];
-    rep[1] = instantanee[1];
-    rep[2] = '\0';
-    //On cree le repertoire
-    sprintf(cmd, "mkdir -p %s", rep);
-    system(cmd);
-    //On copie le fichier 'file' vers 'instantanee'
-    cp(instantanee, temp_obj_file);
-    free(instantanee);
-
-    //On supprime le fichier temporaire
-    sprintf(cmd,"rm %s",temp_obj_file);
-	system(cmd);
-
-	return sha;
-}
-
 //fonction temporaire qui fait le cast de void* vers WorkTree* pour pouvoir utiliser wttf
 void castWTreeToFile(void* obj, char* file) {
     wttf((WorkTree*)obj, file);
@@ -258,26 +198,15 @@ char* blobWorkTree(WorkTree* wt) {
     return blobContent((void*) wt, ".t", castWTreeToFile);
 }
 
-int is_regular_file(const char *path) {
-    struct stat path_stat;
-    stat(path, &path_stat);
-    return S_ISREG(path_stat.st_mode);
-}
-
-int is_folder(const char *path) {
-    struct stat path_stat;
-    stat(path, &path_stat);
-    return S_ISDIR(path_stat.st_mode);
-}
-
-/*La fonction va créer la copie de chaque élément de worktree sur le dossier indiqué par path.
-*Si l'élément est un fichier sa copie est faite par un blobfile et on remplace le hash 
-*du fichier dupliqué par le hash de sa copie.
-*S'il s'agit d'un dossier, nous allons construire le worktree qui le représentant et nous allons le 
-*sauvegarder avec la même focntion saveworktree. On remplace le hash du fichier dans le worktree
-*par le hash du nouveu sousarbre doupliqué.
-*La fonction renvoie le resultat du blobworktree de wt une fois qu'il a été dupliqué et modifié.
-*C'est à dire le hash du nouveau worktree obtenu.
+/**
+ * La fonction va créer la copie de chaque élément de worktree sur le dossier indiqué par path.
+ * Si l'élément est un fichier sa copie est faite par un blobfile et on remplace le hash 
+ * du fichier dupliqué par le hash de sa copie.
+ * S'il s'agit d'un dossier, nous allons construire le worktree qui le représentant et nous allons le 
+ * sauvegarder avec la même focntion saveworktree. On remplace le hash du fichier dans le worktree
+ * par le hash du nouveu sousarbre doupliqué.
+ * La fonction renvoie le resultat du blobworktree de wt une fois qu'il a été dupliqué et modifié.
+ * C'est à dire le hash du nouveau worktree obtenu.
 */
 char* saveWorkTree(WorkTree* wt, char* path) {
     char file_path[WF_STR_SIZE * 2];

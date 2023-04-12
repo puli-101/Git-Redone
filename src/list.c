@@ -158,3 +158,49 @@ void printList(List* L) {
     printf("%s\n",str);
     free(str);
 }
+
+/**
+ * La fonction renvoie 1 si le paramètre prefix est un prefixe du paramètre word.
+ * Au cas contraire un 0 est renvoyé.
+ */
+int isPrefix(char* prefix, char* word) {
+    for (int i = 0; prefix[i] != '\0'; i++) {
+        if (word[i] == '\0' || prefix[i] != word[i])
+            return 0;
+    }
+    return 1;
+}
+
+/**
+ * Renvoie un pointeur sur une sous liste l de L où toutes les cellules de l ont pour
+ * préfixe les charactères du paramètre pattern. La fonction fait une copie des éléments de 
+ * L.
+ */
+List* filterList(List* L, char* pattern) {
+    List* l = initList();
+    for (Cell* e = *L; e != NULL; e = e->next) {
+        char* str = e->data;
+        if (isPrefix(pattern, str)) {
+            insertFirst(l, buildCell(str));
+        }
+    }
+    return l;
+}
+
+//Renvoie une liste ou chaque cellule contient le nom d'un élément du répertoire
+List* listdir(char* root_dir) {
+    DIR * dp = opendir ( root_dir ) ;
+    List* l = initList();
+
+    struct dirent * ep ;
+    if ( dp != NULL ) {
+        while ((ep = readdir (dp)) != NULL ) {
+            insertFirst(l, buildCell(ep->d_name));
+        }
+    }
+
+    if (dp != NULL)
+        closedir(dp);
+
+    return l;
+}

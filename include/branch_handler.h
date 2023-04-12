@@ -23,16 +23,10 @@ List* branchList(char* branch) ;
 
 List* getAllCommits();
 
-void restoreCommit(char* hash_commit);
-
 void myGitCheckoutBranch(char* branch);
 
 void myGitCheckoutBranch(char* branch);
-
-List* filterList(List* L, char* pattern);
 
 void myGitCheckoutCommit(char* pattern);
-
-char* hashToPathExtension(char* hash, char* extension);
 
 #endif

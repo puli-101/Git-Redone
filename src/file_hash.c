@@ -42,24 +42,6 @@ char* sha256file(char* file) {
 	return sha;
 }
 
-//Renvoie une liste ou chaque cellule contient le nom d'un élément du répertoire
-List* listdir(char* root_dir) {
-    DIR * dp = opendir ( root_dir ) ;
-    List* l = initList();
-
-    struct dirent * ep ;
-    if ( dp != NULL ) {
-        while ((ep = readdir (dp)) != NULL ) {
-            insertFirst(l, buildCell(ep->d_name));
-        }
-    }
-
-    if (dp != NULL)
-        closedir(dp);
-
-    return l;
-}
-
 int file_exists(char *file) {
     DIR * dp = opendir ( "." ) ;
     
@@ -87,8 +69,8 @@ void cp(char *to, char *from) {
         return;
     }
 
-    char buff[LIST_STR_SIZE];
-    while (fgets(buff, LIST_STR_SIZE, src)) {
+    char buff[HASH_STR_SIZE];
+    while (fgets(buff, HASH_STR_SIZE, src)) {
         fputs(buff, dest);
     }
 
@@ -133,4 +115,15 @@ void blobFile(char* file) {
     cp(instantanee, file);
     free(instantanee);
     free(hash);
+}
+
+//utilities.h
+/**
+ *Alloue et renvoie la direction d'un fichier à partir de son hash et ajoute l'extension indiquée à 
+ *la fin de l'adresse.
+ */
+char* hashToPathExtension(char* hash, char* extension) {
+    char* str = hashToPath(hash);
+    strcat(str,extension);
+    return str;
 }

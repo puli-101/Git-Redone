@@ -228,3 +228,24 @@ void freeCommit(Commit* c) {
     free(c->T); 
     free(c);
 }
+
+/**
+ * La fonction va chercher le worktree du commit de hash commit et le restaurer.
+ */
+void restoreCommit(char* hash_commit) {
+    char *commit_path = hashToPathExtension(hash_commit, ".c") ;
+    Commit *c = ftc (commit_path);
+
+    char* wt_hash = strdup(commitGet (c , "tree"));
+    char *wt_path = hashToPathExtension(wt_hash, ".t");
+
+    WorkTree * wt = ftwt (wt_path);
+
+    restoreWorkTree(wt , ".");
+
+    freeCommit(c);
+    freeWorkTree(wt);
+    free(commit_path);
+    free(wt_hash);
+    free(wt_path);
+}

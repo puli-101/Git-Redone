@@ -17,3 +17,75 @@ void print_color(FILE* output, char* msg, char* color) {
         value = values[3];
     fprintf(output, "%s%s\033[0m\n", value, msg);
 }
+
+/**
+ * Fonction qui a partir d'un objet quelconque et une fonction qui enregistre cet objet dans un fichier
+ * cree une copie d'un instantanee associe au contenu de l'objet et retourne le hash du fichier
+ * utilisee dans blobWorkTree et blobCommit
+*/
+char* blobContent(void* obj, char* extension, void (*toFile)(void*, char*)) {
+    static char template [] = "tmpXXXXXX" ;
+	char temp_obj_file [STR_SIZE - 100]; //fichier temporaire dans lequel on enregistrera une copie de l'instantanee
+    char rep[3];
+    char* instantanee;
+	char cmd [STR_SIZE];
+	char *sha = (char*)malloc(STR_SIZE*sizeof(char));
+    char* hash;
+
+	if (sha == NULL) 
+		return NULL;
+	
+	strcpy (temp_obj_file , template) ;
+	
+	//On cree le fichier tmpX...
+	int fd = mkstemp (temp_obj_file) ;
+
+	if (fd == -1) {
+		free(sha);
+        close(fd);
+		return NULL;
+	}
+
+    close(fd);
+
+    //On stocke la version string du WorkTree dans le temp_obj_file
+    toFile(obj, temp_obj_file);
+
+    //On recupere le hash du workfile stocke dans temp_obj_file
+    sha = sha256file(temp_obj_file);
+
+    //On recupere l'adresse correspondant au fichier instantanee
+    hash = sha256file(temp_obj_file);
+    instantanee = hashToPath(hash);
+    free(hash);
+    
+    strcat(instantanee, extension);
+    //On recupere le nom du repertoire
+    rep[0] = instantanee[0];
+    rep[1] = instantanee[1];
+    rep[2] = '\0';
+    //On cree le repertoire
+    sprintf(cmd, "mkdir -p %s", rep);
+    system(cmd);
+    //On copie le fichier 'file' vers 'instantanee'
+    cp(instantanee, temp_obj_file);
+    free(instantanee);
+
+    //On supprime le fichier temporaire
+    sprintf(cmd,"rm %s",temp_obj_file);
+	system(cmd);
+
+	return sha;
+}
+
+int is_regular_file(const char *path) {
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISREG(path_stat.st_mode);
+}
+
+int is_folder(const char *path) {
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISDIR(path_stat.st_mode);
+}
