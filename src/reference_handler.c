@@ -10,9 +10,9 @@ void initRefs() {
 }
 
 /**
- *Le fichier est ouvert ou crée si il n'existe pas dnas le repertoire références. 
- Le hash est écrit dessus. Maintenant il est une référence correspondant à un fichier
- ayant ce hash. 
+ *Le fichier de nom ref_name est ouvert ou crée s'il n'existe pas dans le repertoire de 
+ *références. hash est écrit dessus ce fichier. Maintenant il est une référence correspondant 
+ *à un fichier ayant ce hash. 
  */
 void createUpdateRef(char* ref_name, char* hash) {
     char buff[300] = ".refs/";

@@ -3,7 +3,9 @@
 #include "list.h"
 #include "branch_handler.h"
 #include "merge_handler.h"
-
+/**
+ * renvoie 1 si str1 est identique à str2, sinon un 0 est renvoyé.
+ */
 int equals(char* str1, char* str2) {
     return !strcmp(str1, str2);
 }
