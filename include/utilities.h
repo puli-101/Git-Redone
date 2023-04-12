@@ -10,9 +10,11 @@
 #include <dirent.h>
 #include <assert.h>
 #include "file_hash.h"
-
+#define true 1
+#define false 0
 #define STR_SIZE 300
 
+typedef int bool;
 void print_color(FILE* output, char* msg, char* color);
 
 int equals(char* str1, char* str2);

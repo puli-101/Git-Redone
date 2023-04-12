@@ -129,6 +129,12 @@ void createDeletionCommit(char* branch, List* conflicts, char* message) {
             myGitAdd(name);
         }
     }
+    if (is_empty(".add")) {
+        system("touch .padding");
+        FILE* fp = fopen(".add","w");
+        fprintf(fp, ".padding\t\t%d", getChmod(".padding"));
+        fclose(fp);
+    }
     myGitCommit(branch, message);
     myGitCheckoutBranch(current_branch);
     freeWorkTree(wt);
