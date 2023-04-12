@@ -3,7 +3,7 @@
 #include "worktree_handler.h"
 #include "commit_handler.h"
 #include "reference_handler.h"
-#define STR_SIZE 500
+#define TEST_STR_SIZE 500
 
 int main() {
 	char* str;

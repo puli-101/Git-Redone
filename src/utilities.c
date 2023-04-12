@@ -85,3 +85,9 @@ int is_folder(const char *path) {
     stat(path, &path_stat);
     return S_ISDIR(path_stat.st_mode);
 }
+
+int is_empty(const char* path) {
+    struct stat stat_record;
+    //si le fichier n'existe pas alors stat renvoie -1 (true)
+    return stat(path, &stat_record) || stat_record.st_size <= 1;
+}
