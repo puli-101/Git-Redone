@@ -49,7 +49,6 @@ void printBranch(char* branch) {
     char* commit_hash = getRef(branch);
     if (!commit_hash) return;
     char* path = hashToPathExtension(commit_hash, ".c");
-    printf("! %s \n", path);
     Commit *c = ftc(path);
     while(c) {
         char* message = commitGet(c,"message");
@@ -155,6 +154,10 @@ void myGitCheckoutBranch(char* branch) {
     char* commit_hash = getRef(branch);
     if (commit_hash == NULL || commit_hash[0] == '\0') {
         fprintf(stderr,"Invalid branch %s\n",branch);
+        if (commit_hash != NULL) {
+            print_color(stderr,"Branch is empty","red");
+            free(commit_hash);
+        }
         return;
     }
     createUpdateRef("HEAD", commit_hash);

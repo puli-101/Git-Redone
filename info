@@ -1,3 +1,9 @@
 checkout commit : cambia de commit pero no necesariamente cambia el puntero de la rama actual
 
 el archivo tests/test.txt lo considera diferente a ./tests/test.txt porque los strings no coinciden
+
+potencialmente tendriamos que evitar poder agregar dos archivos al hacer ./myGit add
+
+choix d'implementation : en vez de utilizar file exists u otras funciones similares, para ver si un archivo existe, usamos access
+
+segmentation fault checkout-commit si una de las referencias esta vacia

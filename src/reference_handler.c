@@ -18,6 +18,10 @@ void createUpdateRef(char* ref_name, char* hash) {
     char buff[300] = ".refs/";
     strcat(buff,ref_name);
     FILE* f = fopen(buff, "w");
+    if (f == NULL) {
+        print_color(stderr,".refs not initialized !", "red");
+        exit(-1);
+    }
     fprintf(f, "%s", hash);
     fclose(f);
 }

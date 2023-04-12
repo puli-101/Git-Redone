@@ -100,6 +100,7 @@ List* merge(char* remote_branch, char* message) {
 
         restoreWorkTree(fusion, ".");
 
+        freeCommit(c);
         free(hash_commit);
         free(hash_wt);
         free(merged_predecessor);

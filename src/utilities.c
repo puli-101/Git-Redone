@@ -29,11 +29,8 @@ char* blobContent(void* obj, char* extension, void (*toFile)(void*, char*)) {
     char rep[3];
     char* instantanee;
 	char cmd [STR_SIZE];
-	char *sha = (char*)malloc(STR_SIZE*sizeof(char));
+	char *sha;
     char* hash;
-
-	if (sha == NULL) 
-		return NULL;
 	
 	strcpy (temp_obj_file , template) ;
 	
@@ -41,7 +38,6 @@ char* blobContent(void* obj, char* extension, void (*toFile)(void*, char*)) {
 	int fd = mkstemp (temp_obj_file) ;
 
 	if (fd == -1) {
-		free(sha);
         close(fd);
 		return NULL;
 	}

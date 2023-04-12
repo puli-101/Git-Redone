@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     char* programme = argv[0];
     char* instruction = argv[1];
     if (equals(instruction, "help")) {
-        printf("Options d'instructions : \n");
+        print_color(stdout,"Options d'instructions :","blue");
         printf("%s init\n", programme);
         printf("%s list-refs\n", programme);
         printf("%s create-ref <name> <hash>\n", programme);
@@ -77,7 +77,8 @@ int main(int argc, char** argv) {
     } else if (equals(instruction, "list-add")) { 
         WorkTree* wt = ftwt(".add");
         char* str = wtts(wt);
-        printf(".add : \n%s",str);
+        print_color(stdout,".add :","blue");
+        printf("%s",str);
         free(str);
         freeWorkTree(wt);
     } else if (equals(instruction, "clear-add")) { 
@@ -180,7 +181,7 @@ int main(int argc, char** argv) {
                             //idem
                             insertFirst(current_conflicts, buildCell(file));
                         } else if (equals(destination, "q")) {
-                            fprintf(stderr,"\033[0;31mOperation aborted\n\033[0m");
+                            print_color(stderr,"Operation aborted", "red");
                             free(current_branch);
                             freeList(conflicts);
                             freeList(current_conflicts);
@@ -201,16 +202,18 @@ int main(int argc, char** argv) {
                     freeList(remote_conflicts);
                 break;
                 default:
-                    fprintf(stderr,"\033[0;31mOperation aborted\n\033[0m");
+                    print_color(stderr,"Operation aborted", "red");
                 break;
-            }
+            } 
             if (*retry != NULL)
-                fprintf(stderr,"\033[0;31mError while merging\n\033[0m");
+                print_color(stderr, "Error while merging", "red");
             freeList(retry);
             free(current_branch);
-            freeList(conflicts);
-            printf("\033[0;32mMerge successful\n \033[0m"); 
+        } else {
+            print_color(stdout, "No conflicts found","green");
         }
+        freeList(conflicts);
+        print_color(stdout, "Merge successful", "green");
     } else {
         fprintf(stderr, "command not found\n");
     }
