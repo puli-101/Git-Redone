@@ -142,6 +142,8 @@ int main(int argc, char** argv) {
         if (*conflicts != NULL) {
             int opt;
             char* current_branch = getCurrentBranch();
+            List* current_conflicts;
+            List* remote_conflicts;
             //if there is a file overlap we have to choose how to solve the conflict (choose which branch to keep the files in)
             print_color(stderr, "! Merge error - one or multiple files are in conflict", "red");
             fprintf(stderr,"\033[0;33m");
@@ -163,12 +165,13 @@ int main(int argc, char** argv) {
                     retry = merge(remote_branch, msg);
                 break;
                 case 3:
-                    List* current_conflicts = initList();
-                    List* remote_conflicts = initList();
+                    current_conflicts = initList();
+                    remote_conflicts = initList();
                     char destination[300];
                     printf("Choose which file's version to keep\n");
                     for (Cell* e = *conflicts; e != NULL; e = e->next) {
-                        top: char* file = e->data;
+                        char* file;
+                        top: file = e->data;
                         //on choisi la branche associee a la version du fichier qu'on veut conserver
                         printf("\033[0;33mFile %s ? (%s | %s or q to quit) : \033[0m", file, current_branch, remote_branch);
                         scanf(" %s", destination);

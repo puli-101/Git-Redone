@@ -6,7 +6,7 @@ int equals(char* str1, char* str2) {
 
 void print_color(FILE* output, char* msg, char* color) {
     char* values[] = {"\033[0;31m", "\033[0;33m", " \033[0;32m", "\033[0;34m"};
-    char* value;
+    char* value="\033[0m" ;
     if (equals(color, "red"))
         value = values[0];
     else if (equals(color, "yellow"))
