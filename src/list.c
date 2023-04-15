@@ -1,8 +1,8 @@
 #include "list.h"
 
 /**
- * Alloue un espace mémoire pour une Liste qui est initialisé avec la valeur
- * NULL. Un pointeur sur cet espace est renvoyé.
+ *  Renvoie un pointeur sur un espace de la memoire alloue pour une Liste qui est initialisee
+ *  avec la valeur NULL.
  */
 List* initList() {
     List* l = (List*)malloc(sizeof(List));
@@ -11,9 +11,7 @@ List* initList() {
 }
 
 /**
- * Construit et renvoie un pointeur sur une cellule d'une liste. 
- * La cellule aura stocké en data les informations de ch et son
- * pointeur next pointera sur NULL.
+ * Alloue l'espace memoire pour une cellule contenant dans data la chaine ch.
  */
 Cell* buildCell(char* ch) {
     Cell* cell = (Cell*)malloc(sizeof(Cell));
@@ -32,14 +30,16 @@ void insertFirst(List *L, Cell* C) {
 }
 
 /**
- * renvoie la chaine de charactères stocké dans la cellule c.
+ * Renvoie la chaine de characteres stockee dans la cellule c.
  */
 char* ctos(Cell* c) {
     return c->data;
 }
 
-/*renvoie la concatenation des informations d'une liste, les éléments sont
- séparés par "|" */
+/** 
+ * Renvoie la concatenation des informations d'une liste, les éléments sont
+ *separes par "|" 
+ */
 char* ltos(List* L) {
     char* str = malloc(sizeof(char) * LIST_STR_SIZE);
     str[0] = '\0';
@@ -67,9 +67,8 @@ Cell* listGet(List* L, int i) {
 }
 
 /**
- * Renvoie un pointeur de la première cellule de L dont sa chaine à charactères est
- * identique à la chaine str. 
- * Si cette cellule n'éxiste pas NULL est renvoyé.
+ * Renvoie un pointeur sur la premiere chaine de la liste ayant pour data la chaine str si cette cellule existe.
+ * Sinon NULL est renvoye.
  */
 Cell* searchList(List* L, char* str) {
     Cell* tmp = *L;
@@ -81,7 +80,9 @@ Cell* searchList(List* L, char* str) {
     return NULL;
 }
 
-/**Reconstruit une liste à partir d'une chaine de charactères */
+/**
+ * Reconstruit une liste à partir d'une chaine de characteres.
+ */
 List* stol(char* s) {
     char buff[LIST_STR_SIZE];
     int buf_i = 0;  //compteur de la taille du mot
@@ -108,7 +109,9 @@ List* stol(char* s) {
     return l;
 }
 
-/*list-to-file: Écrit sur le fichier path la chaine de charactères représentant la liste */
+/**
+*list-to-file: Ecrit sur le fichier path la chaine de characteres representant la liste. 
+*/
 void ltof(List* L, char* path) {
     FILE* f = fopen(path, "w");
     if (f == NULL) {
@@ -121,7 +124,9 @@ void ltof(List* L, char* path) {
     fclose(f);
 }
 
-/**File-to-list: Lit un fichier et renvoie un pointeur sur une liste qui contient son contenu */
+/** 
+ * File-to-list: Lit un fichier et renvoie un pointeur sur une liste qui contient son contenu 
+ */
 List* ftol(char* path) {
     FILE* f = fopen(path, "r");
     if (f == NULL) {
@@ -136,7 +141,7 @@ List* ftol(char* path) {
 }
 
 /**
- * Libère tout l'espace pris par la Liste L et son contenu.
+ * Libere tout l'espace pris par la Liste L et son contenu.
  */
 void freeList(List* L) {
     if (!L) return;
@@ -151,7 +156,7 @@ void freeList(List* L) {
 }
 
 /**
- * Affiche le contenu d'une Liste. Pour chaque cellule son contenu est affiché sur une ligne.
+ * Affiche le contenu d'une Liste. 
  */
 void printList(List* L) {
     char* str = ltos(L);
@@ -160,8 +165,7 @@ void printList(List* L) {
 }
 
 /**
- * La fonction renvoie 1 si le paramètre prefix est un prefixe du paramètre word.
- * Au cas contraire un 0 est renvoyé.
+ * La fonction renvoie 1 si le paramètre prefix est un prefixe du paramètre word. Sinon elle renvoie 0.
  */
 int isPrefix(char* prefix, char* word) {
     for (int i = 0; prefix[i] != '\0'; i++) {
@@ -172,9 +176,7 @@ int isPrefix(char* prefix, char* word) {
 }
 
 /**
- * Renvoie un pointeur sur une sous liste l de L où toutes les cellules de l ont pour
- * préfixe les charactères du paramètre pattern. La fonction fait une copie des éléments de 
- * L.
+ * Copie et fait une liste des elements de L qui ont pour prefixe pattern.
  */
 List* filterList(List* L, char* pattern) {
     List* l = initList();
@@ -187,7 +189,9 @@ List* filterList(List* L, char* pattern) {
     return l;
 }
 
-//Renvoie une liste ou chaque cellule contient le nom d'un élément du répertoire
+/**
+ * Renvoie une liste ou chaque cellule contient le nom d'un element du repertoire.
+ */
 List* listdir(char* root_dir) {
     DIR * dp = opendir ( root_dir ) ;
     List* l = initList();

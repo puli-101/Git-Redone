@@ -19,9 +19,9 @@ void print_color(FILE* output, char* msg, char* color) {
 }
 
 /**
- * Fonction qui a partir d'un objet quelconque et une fonction qui enregistre cet objet dans un fichier
- * cree une copie d'un instantanee associe au contenu de l'objet et retourne le hash du fichier
- * utilisee dans blobWorkTree et blobCommit
+ * Fonction qui a partir d'un objet quelconque enregistre cet objet dans un fichier et
+ * cree une copie d'une instantanee associee au contenu de l'objet et retourne le hash du fichier.
+ * La fonction est utilisee dans blobWorkTree et blobCommit.
 */
 char* blobContent(void* obj, char* extension, void (*toFile)(void*, char*)) {
     static char template [] = "tmpXXXXXX" ;
