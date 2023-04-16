@@ -1,7 +1,6 @@
 #include "commit_handler.h"
-/**
- * Alloue l'espace pour un kvp et crée la kvp correpondant aux données saisies en arguments
- */
+
+/** Alloue et fabrique la kvp correpondant aux données saisies en arguments*/
 kvp* createKeyVal(char* key, char* val) {
     kvp* kv = (kvp*)malloc(sizeof(kvp));
     kv->key = strdup(key);
@@ -15,7 +14,7 @@ void freeKeyVal(kvp* kv) {
     free(kv);
 }
 
-/*kvp to string: alloue et renvoie la chaine de charactères correspendant à la kvp*/
+/** kvp to string: alloue et renvoie la chaine de charactères correspendant à la kvp */
 char* kvts(kvp* k) {
     char* str = (char*)malloc(sizeof(char) * (COMMIT_STR / 10));
     //format : key : value
@@ -23,7 +22,7 @@ char* kvts(kvp* k) {
     return str;
 }
 
-/*String to kvp:*/
+/** String to kvp: alloue et renvoie un poointeur sur la kvp decrite par str. */
 kvp* stkv(char* str) {
     char key[(COMMIT_STR / 10)];
     char val[(COMMIT_STR / 10)];
@@ -35,7 +34,7 @@ kvp* stkv(char* str) {
     return kv;
 }
 
-
+/** Alloue et renvoie un pointeur su un nouveau commit.*/
 Commit* initCommit() {
     Commit* c = (Commit*)malloc(sizeof(Commit));
     c->n = MAX_COMMIT;
@@ -48,9 +47,7 @@ Commit* initCommit() {
     return c;
 }
 
-/*Ajoute une kvp à la table d'hachage du commit c si possible.
-Les collisions de notre table d'hachage sont gerées par 
-adressage ouvert linéaire.*/
+/** Ajoute une kvp à la table d'hachage du commit c si possible. */
 void commitSet(Commit* c, char* key, char* value) {
     if (c->size >= c->n) return;
     unsigned long index = hash((unsigned char*)key) % MAX_COMMIT;
@@ -77,10 +74,7 @@ void commitSet(Commit* c, char* key, char* value) {
     
 }
 
-//hash 33
-/**
- * Fonction d'hachage choisie:
- */
+/** Renvoie le hash 33 de str.*/
 unsigned long hash(unsigned char *str) {
     unsigned long hash = 5381;
     int c;
@@ -91,8 +85,8 @@ unsigned long hash(unsigned char *str) {
     return hash;
 }
 
-/**Initilialise et alloue un nouveau commit pour renvoyer un pointeur de ce commit
- * La table d'hachage du commit contiendra une kvp de valeur ("tree" : hash).
+/** Renvoie un pointeur sur un nouveau commit. La table d'hachage du nouveau
+ * commit contiendra une kvp de valeur ("tree" : hash).
 */
 Commit* createCommit(char* hash) {
     Commit* c = initCommit();
@@ -100,12 +94,7 @@ Commit* createCommit(char* hash) {
     return c;
 }
 
-/** 
- * On recupere la valeur associée à key
- * On suppose qu'on ne peut pas supprimer des éléments du tableau
- * alors la premiere case vide qu'on retrouve lors du parcours implique 
- * que l'élément de cle key n'est pas présent
-*/
+/** On recupere la valeur associée à key dans le commit c. */
 char* commitGet(Commit* c, char* key) {
     int index = hash((unsigned char*)key) % MAX_COMMIT, i = (index + 1) % MAX_COMMIT;
     //on suppose qu'on ne supprime pas les commits (la table de hachage n'est pas dynamique)
@@ -116,9 +105,11 @@ char* commitGet(Commit* c, char* key) {
     }
 
     //parcours du probing cyclique lineaire
-    while (i != index) {
+    //On suppose qu'on ne peut pas supprimer des éléments du tableau. 
+    while (i != index) { 
         if (c->T[i] == NULL) {
-            return NULL;
+            return NULL; 
+            //si on trouve une casse vide et on n'a pas trouvé la kvp cherchee, elle n'existe pas
         } else if (strcmp(c->T[i]->key, key) == 0) {
             return c->T[i]->value;
         }
@@ -129,7 +120,8 @@ char* commitGet(Commit* c, char* key) {
     return NULL;
 }
 
-//Commit to string
+/** Commit to string: renvoie un pointeur sur la chaine de caractères representant un commit 
+ * (que la fonction alloue) */
 char* cts(Commit* c) {
     char* str = (char*)malloc(sizeof(char) * COMMIT_STR);
     char* kv_str;
@@ -148,6 +140,7 @@ char* cts(Commit* c) {
 
 //on decale la tete de la chaine associee a **buff et on itere lorseque la ligne n'est pas fini
 //on recopie les valeurs dans line
+/** copie sur line la premiere partie de buff representant une ligne*/
 char* extractLine(char* line, char** buff) {
     int i;
     for (i = 0; **buff != '\0' && **buff != '\n'; (*buff)++, i++) {
@@ -162,8 +155,7 @@ char* extractLine(char* line, char** buff) {
     return *buff;
 }
 
-/** string to commit:
-*/
+/** string to commit: Renvoie un pointeur sur la chaine de caracteres decrivant un commit*/
 Commit* stc(char* ch) {
     Commit* c = initCommit();
     char ligne[COMMIT_STR];
@@ -178,7 +170,7 @@ Commit* stc(char* ch) {
     return c; 
 }
 
-//Commit to File
+/** Commit to File: cree le fichier file contenant la chaine de caracteres representant le commit c */
 void ctf(Commit* c, char* file) {
     FILE* f = fopen(file, "w");
     char* str = cts(c);
@@ -187,7 +179,7 @@ void ctf(Commit* c, char* file) {
     fclose(f);
 }
 
-//File to commit
+/** Alloue et renvoie un pointeur sur le commit decrit par le contenu du fichier file. */
 Commit* ftc(char* file) {
     FILE* f = fopen(file, "r");
     char ligne[COMMIT_STR], key[COMMIT_STR], value[COMMIT_STR];
@@ -204,19 +196,17 @@ Commit* ftc(char* file) {
     return c;
 }
 
-//fonction temporaire qui fait le cast de void* vers Commit* pour pouvoir utiliser ctf
+/** fonction auxiliaire qui fait le cast de void* vers Commit* pour pouvoir utiliser ctf */
 void castCommitToFile(void * obj, char* file) {
     ctf((Commit*)obj, file);
 }
 
-/**
- * Crée  une copie instantanée du commit nomée d'apres le hash du commit et 
- * renvoie le hash du nouveau commit.
- */
+/** Cree  le blob (copie instantanée) du commit et renvoie le hash du blob */
 char* blobCommit(Commit* c) {
     return blobContent((void*) c, ".c", castCommitToFile);
 }
 
+/** Libere tout l'espace memoire employe par le commit c. */
 void freeCommit(Commit* c) {
     for (int i = 0; i < c->n ; i++) {
         if (c->T[i] != NULL) {
@@ -229,9 +219,7 @@ void freeCommit(Commit* c) {
     free(c);
 }
 
-/**
- * La fonction va chercher le worktree du commit de hash commit et le restaurer.
- */
+/** La fonction va chercher le worktree du commit de hash commit et le restaurer. */
 void restoreCommit(char* hash_commit) {
     char *commit_path = hashToPathExtension(hash_commit, ".c") ;
     Commit *c = ftc (commit_path);

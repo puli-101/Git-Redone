@@ -5,6 +5,10 @@
 #include "merge_handler.h"
 #include "utilities.h"
 
+/**
+ * La fonction main sert comme un menu où le client aura accès aux fonctions qui lui permettront de gérer 
+ * l'historiel de versions de son projet. 
+ */
 int main(int argc, char** argv) {
     if (argc == 1) {
         fprintf(stderr,"Utilisation : %s <instruction> [complements]\n", argv[0]);

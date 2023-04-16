@@ -1,9 +1,13 @@
 #include "utilities.h"
 
+/** Renvoie 1 si les deux chaines de caracteres sont identiques. */
 int equals(char* str1, char* str2) {
     return !strcmp(str1, str2);
 }
 
+/** Ecrit msg en la couleur color sur le fichier output.
+ * Les couleurs disponibles sont  "red","yellow","green" et "blue".
+ */
 void print_color(FILE* output, char* msg, char* color) {
     char* values[] = {"\033[0;31m", "\033[0;33m", " \033[0;32m", "\033[0;34m"};
     char* value="\033[0m" ;
@@ -74,18 +78,23 @@ char* blobContent(void* obj, char* extension, void (*toFile)(void*, char*)) {
 	return sha;
 }
 
+/** Renvoie  1 si path est un fichier normal, 0 si non.*/
 int is_regular_file(const char *path) {
     struct stat path_stat;
     stat(path, &path_stat);
     return S_ISREG(path_stat.st_mode);
 }
 
+/** Renvoie 1 si path est un repertoire*/
 int is_folder(const char *path) {
     struct stat path_stat;
     stat(path, &path_stat);
     return S_ISDIR(path_stat.st_mode);
 }
 
+/** Si le fichier path n'existe pas la fonction renvoie -1. Si non elle renvoie 1 si 
+ * le fichier path est vide et 0 s'il n'est pas vide.
+*/
 int is_empty(const char* path) {
     struct stat stat_record;
     //si le fichier n'existe pas alors stat renvoie -1 (true)

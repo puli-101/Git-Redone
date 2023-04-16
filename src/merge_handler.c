@@ -1,12 +1,8 @@
 #include "merge_handler.h"
 
 /**
- * La fonction renvoie unpointeur sur un worktree alloué qui contient dans sa table
- * les workfiles qui ne sont pas présentes dans wt1 et wt2. À la fin de la fonction 
- * conflicts era un double pointeur sur une liste contennant les noms des workfiles 
- * présents dans le wt1 et wt2.
- * On considère qu'un workfile wf est dans wt1 et wt2 si les deux worktrees ont un 
- * workfile avec le hash de wf.
+ * La fonction cree et renvoie un pointeur sur un worktree contenant les workfiles des fichiers de wt1
+ * et wt2 qui ne sont pas en conflit. Les fichiers en conflit sont ajoutes a la liste conflicts.
  */
 WorkTree* mergeWorkTrees(WorkTree* wt1, WorkTree* wt2, List** conflicts) {
     *conflicts = initList();
@@ -34,7 +30,7 @@ WorkTree* mergeWorkTrees(WorkTree* wt1, WorkTree* wt2, List** conflicts) {
 }
 
 /**
- * Alloue un espace mémoire pour recontruire et 
+ * Alloue un espace memoire pour reconstruire et 
  * renvoyer un pointeur du worktree du dernier 
  * commit de la branche branch
  */
@@ -62,14 +58,12 @@ WorkTree* getWorkTreeFromBranchName(char* branch) {
 
 /**
  *  Si il n'y a pas des conflits entre la remote branch et la branche actuelle, 
- * Un worktree wt contenant les fichiers des deux branches est alloué.
+ * Un worktree wt contenant les fichiers des deux branches est alloue.
  * Un commit  ayant pour worktree  wt est crée et la current branch est actualisée,
- * elle pointe maintenant à ce nouveau commit. 
- * Ce commit aura pour prédecesseur le dernier commit de la branche courante et 
+ * elle pointe maintenant a ce nouveau commit. 
+ * Ce commit aura pour predecesseur le dernier commit de la branche courante et 
  * additionellement il aura pour merged predecessor le dernier commit de remote_branch.
- * Le HEAD va aussi pointer ver le nouveau commit. Finalement l'arbre wt est restauré.
- * La fonction renvoie un pointeur sur la liste de conflits entre remote_branch et la 
- * branche courrante. 
+ *HEAD et current branch sont actualisés et wt est restaure.
  */
 List* merge(char* remote_branch, char* message) {
     List* conflicts = NULL;
@@ -114,8 +108,8 @@ List* merge(char* remote_branch, char* message) {
 }
 
 /**
- * La fonction va créer un commit sur la branche branch où seulement les documents
- * absents dans la liste de  conflits sont enregistrés par le worktree du commit.
+ * La fonction va creer un commit sur la branche branch ou seulement les documents
+ * absents dans la liste conflicts sont enregistres par le worktree du commit.
  */
 void createDeletionCommit(char* branch, List* conflicts, char* message) {
     char* current_branch = getCurrentBranch();

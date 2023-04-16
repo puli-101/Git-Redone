@@ -1,34 +1,26 @@
 #include "branch_handler.h"
 
-/**
- * Duplique le master dans le fichier caché current_branch.
- */
+/** Duplique le master dans le fichier cache current_branch. */
 void initBranch() {
     system("echo master > .current_branch");
 }
 
-/**
- * Vérifie si la branche branch existe dans le répertoire de références. 
- */
+/** Verifie si la branche branch existe dans le repertoire de references renvoie 1 si c'est le cas. */
 int branchExists(char* branch) {
     char buff[300] = ".refs/";
     strcat(buff,branch);
     return access(buff, F_OK) == 0;
 }
 
-/**
- * Fait que le head pointe dans la branche indiquée. 
- */
+/** Fait que le head pointe dans la branche indiquee. */
 void createBranch(char* branch) {
     char* ref = getRef("HEAD");
     createUpdateRef(branch, ref);
     free(ref);
 }
 
-/**
- * Alloue un espace de mémoire pour garder et renvoyer un pointeur sur le hash du dernier commit qui 
- * est stocké aussi dans le master en théorie. 
- */
+/** Alloue un espace de memoire pour garder et renvoyer un pointeur sur une chaine de caracteres ayant 
+ * le contenu de .current_branch */
 char* getCurrentBranch() {
     FILE* f = fopen(".current_branch", "r");
     assert(f != NULL);
@@ -39,9 +31,8 @@ char* getCurrentBranch() {
 }
 
 /**
- *  Pour une branche, la fonction va afficher le message et le hash de tous les commits de la branche.
- * L'affichage est effectué en allant du plus nouveau des commits au plus vieux des commits.
- * des commits de la branche. Les informations sont présentées sous la forme:
+ *  Affiche ligne par liche les commits d'une branche.
+ * Les informations sont presentees sous la forme:
  * Hash: ...
  * Message: ...
  */
@@ -81,10 +72,8 @@ void printBranch(char* branch) {
 }
 
 /**
- * Initialise et alloue l'espace de mémoire pour rendre le pointeur sur une liste contenant
+ * Initialise et alloue l'espace de memoire pour rendre le pointeur sur une liste contenant
  * dans ces cellules les hash des commits de la branche branch.
- * Les commits dans la liste vont être ordonnées dans leur ordre chronologique (Le plus vieux dans
- * la tête de la liste.)
  */
 List * branchList(char* branch) {
     List* l = initList();
@@ -124,9 +113,7 @@ List * branchList(char* branch) {
 
 /**
  * Cette fonction renvoie un pointeur sur une liste avec tous les commits de toutes les branches
- * de ./refs .La fonction va parcourir les listes de commits de chaque branche et ajouter les commits dans 
- * une liste L si ils ne sont pas déjà dans la liste.
- * La fonction renvoie le pointeur de L.
+ * de ./refs.
  */
 List* getAllCommits() {
     List* l = initList();
@@ -148,9 +135,9 @@ List* getAllCommits() {
 }
 
 /**
- * LA fonction va écrire le nom de la branche branch sur ".current_branch",
+ * La fonction va ecrire le nom de la branche branch sur ".current_branch",
  * elle actualise aussi HEAD pour qu'il pointe sur la nouvelle branche courrante.
- * Un message d'erreur est affiché si la branche branch n'existe pas dans ./refs.
+ * Un message d'erreur est affiche si la branche branch n'existe pas dans ./refs.
  */
 void myGitCheckoutBranch(char* branch) {
     FILE* f = fopen(".current_branch", "w");
@@ -170,10 +157,10 @@ void myGitCheckoutBranch(char* branch) {
 }
 
 /**
- * Selon le patron inséré en paramètres, la fonction va afficher la liste des commits qui suivent
- * ont pour préfixe pattern dans leur hash. S'il ne reste qu'un commit ayant le patron pour préfixe, la
- * Head va pointer sur ce commit et ce Commit est restauré.
- * Si aucun commit a pour préfixe pattern un message d'erreur est affiché.
+ * Selon le patron insere en parametres, la fonction va afficher la liste des commits qui 
+ * ont pour prefixe pattern dans leur hash. S'il ne reste qu'un commit ayant le patron pour préfixe, la
+ * Head va pointer sur ce commit et ce Commit est restaure.
+ * Si aucun commit a pour prefixe pattern un message d'erreur est affiché.
  */
 void myGitCheckoutCommit(char* pattern) {
     List* all_commits = getAllCommits();

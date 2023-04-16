@@ -9,6 +9,9 @@ typedef struct cell {
     struct cell * next ;
 } Cell, *List ;
 
+/** Renvoie un pointeur sur un espace de la memoire alloue pour une Liste qui est initialisee 
+ * avec la valeur NULL.
+ */
 List* initList();
 
 /**

@@ -1,8 +1,7 @@
 #include "list.h"
 
-/**
- *  Renvoie un pointeur sur un espace de la memoire alloue pour une Liste qui est initialisee
- *  avec la valeur NULL.
+/** Renvoie un pointeur sur un espace de la memoire alloue pour une Liste qui est initialisee 
+ * avec la valeur NULL.
  */
 List* initList() {
     List* l = (List*)malloc(sizeof(List));

@@ -1,19 +1,15 @@
 #include "reference_handler.h"
-/**
- * Cette fonction va créer le repertoire caché de reférences si il n'existe pas.
- * Dans ce repertoire, les fichiers vides  Head et Master sont crées.
- */
+
+/** Cette fonction va creer le repertoire caché de reférences si il n'existe pas.
+ * Dans ce repertoire, les fichiers vides  Head et Master sont crees. */
 void initRefs() {
     system("mkdir -p .refs");
     system("touch .refs/master");
     system("touch .refs/HEAD");
 }
 
-/**
- *Le fichier de nom ref_name est ouvert ou crée s'il n'existe pas dans le repertoire de 
- *références. hash est écrit dessus ce fichier. Maintenant il est une référence correspondant 
- *à un fichier ayant ce hash. 
- */
+/** Le fichier de nom ref_name est ouvert ou cree s'il n'existe pas dans le repertoire de 
+ *références. hash est écrit dessus ce fichier. */
 void createUpdateRef(char* ref_name, char* hash) {
     char buff[300] = ".refs/";
     strcat(buff,ref_name);
@@ -26,21 +22,15 @@ void createUpdateRef(char* ref_name, char* hash) {
     fclose(f);
 }
 
-/**
- * Élimine la reférence mise en paramètres.
- */
+/** Elimine la reference mise en parametres. */
 void deleteRef(char* ref_name) {
     char cmd[500];
     sprintf(cmd,"rm -f .refs/%s", ref_name);
     system(cmd);
 }
 
-/**
- * Pour une référence existante dans ./refs, la référence ref_name est ouverte.
- * Son contenu est lu et alloué dans une chaine de caractères de taille maximale 500.
- * La fonction renvoie cette chaine de caractères si le fichier existe. Si non un message
- * d'erreur est affiché.
- */
+/** Si ref_name existe dans le fichier ./refs, un pointeur su une chaine de caracteres allouee
+ * contenant le texte du fichier ref_name est renvoye. */
 char* getRef(char* ref_name) {
     char buff[300] = ".refs/";
     strcat(buff,ref_name);
@@ -60,42 +50,29 @@ char* getRef(char* ref_name) {
     }
 }
 
-/**
- * Va créer o un worktree correspondant à notre zone de préparation, c'est à dire
- * le repertoire chaché ./add .
- * Le fichier en paramètres sera ajouté à ce worktree si possible.
- * La zone de préparation sera actualisé et le document file_ro_folder sera inclus dans
- * la zone.
- * Si file_or_folder n'existe pas un message d'erreur est affiché.
- */
+/** Ajoute le fichier file_or_folder au WorkTree decrit par ".add", notre zone de preparation. */
 void myGitAdd(char* file_or_folder) {
     system("touch .add");
-    if (access(file_or_folder, F_OK) == 0) {
-        WorkTree* add = ftwt(".add");
-        appendWorkTree(add, file_or_folder, "", getChmod(file_or_folder));
-        wttf(add, ".add");
+    if (access(file_or_folder, F_OK) == 0) { //vérification de l'existance de add
+        WorkTree* add = ftwt(".add");        //recuperation du worktree represente par add
+        appendWorkTree(add, file_or_folder, "", getChmod(file_or_folder)); //ajout de file_or_folder
+        wttf(add, ".add");  //enregistrement du nouveau worktree dans add
         freeWorkTree(add);
     } else {
-        fprintf(stderr,"Error : file %s does not exist\n", file_or_folder);
+        fprintf(stderr,"Error : file %s does not exist\n", file_or_folder); 
     }
 }
 
-/**
- *Pour que la fonction fonctionne il faut que Head et brach name existent et aient le même contenu.
- *Les répertoires ./add et ./refs doivent exister. Si non un message d'erreur est affiché.
- * La fonciton va créer un worktree de ./add et le sauvegarder. 
- * La zone de préparation sera eliminé et un commit représentant (par so hash) le worktree sauvegardé est 
- * crée. Ce commit est suvegardé et ajouté au début de  la branche branch_name. Le head est placé sur le 
- * nouveau commit.
- */
+/** Cree le commit pour message @message et pour worktree le worktree de ".add" sur la 
+ * branche branch_name. */
 void myGitCommit(char* branch_name, char* message) {
-    if (access(".refs", F_OK) != 0) {
+    if (access(".refs", F_OK) != 0) {              //vérification de l'existance des references
         fprintf(stderr,"Initialiser d'abord les references du projet\n");
         exit(-1);
     } 
     char buff[300] = ".refs/";
     strcat(buff,branch_name);
-    if (access(buff, F_OK) != 0) {
+    if (access(buff, F_OK) != 0) {      //verification de l'acces a branch_name
         fprintf(stderr, "La branche n'existe pas\n");
         exit(-1);
     } 
@@ -109,7 +86,7 @@ void myGitCommit(char* branch_name, char* message) {
         exit(-1);
     }
     
-    if (access(".add", F_OK) != 0) {
+    if (access(".add", F_OK) != 0) {    //acces au worktree qu'on devrait enregistrer
         fprintf(stderr, "No files to be committed\n");
         free(last_commit);
         free(head_commit);
@@ -118,8 +95,8 @@ void myGitCommit(char* branch_name, char* message) {
     WorkTree* wt = ftwt(".add");
     char* hashWT;
     system("rm .add");
-    hashWT = saveWorkTree(wt, ".");
-    Commit *c = createCommit(hashWT);
+    hashWT = saveWorkTree(wt, ".");     //sauvegarde d'une copie des documents de .add
+    Commit *c = createCommit(hashWT);   //creation du commit 
 
     if (strlen(last_commit) != 0) {
         commitSet(c,"predecessor", last_commit);
@@ -129,7 +106,7 @@ void myGitCommit(char* branch_name, char* message) {
     }
     char* hashCommit = blobCommit(c);
 
-    createUpdateRef(branch_name, hashCommit);
+    createUpdateRef(branch_name, hashCommit);   //actualisation de nos branches
     createUpdateRef("HEAD", hashCommit);
 
     freeCommit(c);

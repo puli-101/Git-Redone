@@ -1,8 +1,6 @@
 #include "worktree_handler.h"
 
-/**
- * Renvoie le mode du document d'adresse path.
- */
+/** Renvoie le mode du document d'adresse path.*/
 int getChmod ( const char * path ) {
     struct stat ret ;
 
@@ -15,18 +13,14 @@ int getChmod ( const char * path ) {
             ( ret.st_mode & S_IROTH ) |( ret.st_mode & S_IWOTH ) |( ret.st_mode & S_IXOTH ) ; /*other*/
 }
 
-/**
- * Modifie à @mode le mode du fichier d'adresse path.
- */
+/** Modifie à @mode le mode du fichier d'adresse path.*/
 void setMode ( int mode , char * path ) {
     char buff [1000];
     sprintf ( buff , "chmod %o %s " , mode , path ) ;
     system ( buff ) ;
 }
 
-/**
- * Allocation et initialisation d'un workfile à partir de la chaine name.
- */
+/** Allocation et initialisation d'un workfile à partir de la chaine name. */
 WorkFile* createWorkFile(char* name) {
     WorkFile* wtf = (WorkFile*)malloc(sizeof(WorkFile));
     wtf->name = strdup(name);
@@ -34,9 +28,8 @@ WorkFile* createWorkFile(char* name) {
     wtf->mode = getChmod(name);
     return wtf;
 }
-/** 
- * Workfile to string: On alloue et retourne une chaine de charactères représentant un workfile
- */
+
+/** Workfile to string: On alloue et retourne une chaine de charactères représentant un workfile */
 char* wfts(WorkFile* wf) {
     char* str = (char*)malloc(sizeof(char) * WF_STR_SIZE);
     char mode[100];
@@ -53,10 +46,7 @@ char* wfts(WorkFile* wf) {
     return str; 
 }
 
-/**
- * On alloue et renvoie un WF* a partir du char*
- *on suppose que char* est dans le bon format
- */
+/** On alloue et renvoie un WF* a partir du char. **/
 WorkFile* stwf(char* ch) {
     char name[WF_STR_SIZE];
     char hash[WF_STR_SIZE];
@@ -79,9 +69,7 @@ WorkFile* stwf(char* ch) {
     return wtf;
 }
 
-/** 
- * Alloue et renvoie un pointeur d'un nouveau worktree dont le tableau de WorkFiles est vide.
-*/
+/** Alloue et renvoie un pointeur d'un nouveau worktree dont le tableau de WorkFiles est vide. */
 WorkTree* initWorkTree() {
     WorkTree* wt = (WorkTree*)malloc(sizeof(WorkTree));
     wt->tab = (WorkFile*)malloc(sizeof(WorkFile) * WF_TREE_SIZE);
@@ -89,10 +77,9 @@ WorkTree* initWorkTree() {
     wt->n = 0;
     return wt;
 }
-/** 
- * La fonction cherche un workfile correspondant au fichier de nom char dans le worktree et elle 
- * renvoie son indice dans le tableau du worktree. Si le fichier est absent un -1 est renvoye.
-*/
+
+/** La fonction cherche un workfile correspondant au fichier de nom char dans le worktree et elle 
+ * renvoie son indice dans le tableau du worktree. Si le fichier est absent un -1 est renvoye. */
 int inWorkTree(WorkTree* wt, char* name) {
     for (int i = 0; i < wt->n; i++) {
         if (!strcmp(wt->tab[i].name, name))
@@ -101,9 +88,8 @@ int inWorkTree(WorkTree* wt, char* name) {
     return -1;
 }
 
-/**
- * S'il reste d'espace, elle ajoute le workfile contenant l'information des paramètres au 
- * worktree wt. La fonction renvoie l'indice de la caisse où le nouveau workfile est stocké, 
+/** S'il reste d'espace, elle ajoute le workfile contenant l'information des parametres au 
+ * worktree wt. La fonction renvoie l'indice de la caisse ou le nouveau workfile est stocke, 
  * cet indice est -1 s'il ne reste plus d'espace.*/
 int appendWorkTree(WorkTree* wt, char* name, char* hash, int mode) {
     int index = inWorkTree(wt,name);
@@ -119,9 +105,7 @@ int appendWorkTree(WorkTree* wt, char* name, char* hash, int mode) {
     return index;
 }
 
-/** 
- * work tree to string:
-*/
+/** worktree to string: renvoie la chaine de caracteres associee a wt */
 char* wtts(WorkTree* wt) {
     char* str = (char*)malloc(sizeof(char) * WF_STR_SIZE * WF_TREE_SIZE);
     str[0] = '\0';
@@ -145,9 +129,7 @@ void freeWorkFile(WorkFile* wf) {
     free(wf);
 }
 
-/** 
- * String to work tree:
- * */
+/** String to worktree: renvoie le worktree represente par str. */
 WorkTree* stwt(char* str) {
     char str_wf[WF_STR_SIZE];
     int index = 0, i;
@@ -173,9 +155,7 @@ WorkTree* stwt(char* str) {
     return wt;
 }
 
-/** 
- * WorkTree to File:
- */
+/** WorkTree to File: Cree une File file contenant la chaine de caracteres decrivant wt*/
 int wttf(WorkTree* wt, char* file) {
     FILE* f = fopen(file, "w");
     assert(f != NULL);
@@ -186,9 +166,8 @@ int wttf(WorkTree* wt, char* file) {
     return 1;
 }
 
-/**
- * File to WorkTree* on suppose que chaque ligne a le bon format.
-*/
+/** File to WorkTree* on suppose que chaque ligne a le bon format. Renvoie un pointeur sur un worktree
+ * construit a partir du contenu de file. */
 WorkTree* ftwt(char* file) {
     FILE* f = fopen(file, "r");
     char buff[WF_STR_SIZE];
@@ -207,7 +186,7 @@ WorkTree* ftwt(char* file) {
     return wt;
 }
 
-/** libere work tree */
+/** libere worktree */
 void freeWorkTree(WorkTree* wt) {
     for (int i = 0; i < wt->n; i++) {
         free(wt->tab[i].name);
@@ -222,21 +201,13 @@ void castWTreeToFile(void* obj, char* file) {
     wttf((WorkTree*)obj, file);
 }
 
-/** retourner le hash du fichier temporaire qui contient le wt */
+/** retourne le hash du fichier temporaire qui contient le string du worktree wt. */
 char* blobWorkTree(WorkTree* wt) {
     return blobContent((void*) wt, ".t", castWTreeToFile);
 }
 
-/**
- * La fonction va créer la copie de chaque élément de worktree sur le dossier indiqué par path.
- * Si l'élément est un fichier sa copie est faite par un blobfile et on remplace le hash 
- * du fichier dupliqué par le hash de sa copie.
- * S'il s'agit d'un dossier, nous allons construire le worktree qui le représentant et nous allons le 
- * sauvegarder avec la même focntion saveworktree. On remplace le hash du fichier dans le worktree
- * par le hash du nouveu sousarbre dupliqué.
- * La fonction renvoie le resultat du blobworktree de wt une fois qu'il a été dupliqué et modifié.
- * C'est à dire le hash du nouveau worktree obtenu.
-*/
+/** Fait un blob (copie instantanee) de tous les fichiers dans work tree et stocke leur hash dans la workfile
+ *  de chaque fichier. Puis un blob du worktree est effectué et le hash de ce dernier blob est retourné. */
 char* saveWorkTree(WorkTree* wt, char* path) {
     char file_path[WF_STR_SIZE * 2];
     char* file;
@@ -271,7 +242,7 @@ char* saveWorkTree(WorkTree* wt, char* path) {
                 element = element->next;
             }
             freeList(l);
-            
+            //on fait le blob du worktree du folder.
             char* hash = saveWorkTree(new_wt, file);
             free(wt->tab[i].hash);
             wt->tab[i].hash = hash;
@@ -289,11 +260,7 @@ char* saveWorkTree(WorkTree* wt, char* path) {
 
 /**
  *  La fonction va chercher le fichier temporaire du contenu enregistré par le worktree
- * Si ce fichier temporaire existe il va copier son contenu dans les fichiers du worktree.
- * Les fichiers temporaires des workfiles correspondent aux fichiers només à partir de leur 
- * hash.
- *  Restore worktree va restaurer la totalité du repertoire dans le worktree grâce à des 
- * appels recursifs sur les dossiers du worktree.
+ * La fonction fait le transfert des copies d'une instance des fichiers aux fichiers originaux.
  */
 void restoreWorkTree(WorkTree* wt, char* path) {
     char cmd[WF_STR_SIZE];
