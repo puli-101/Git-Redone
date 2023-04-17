@@ -80,14 +80,18 @@ int main(int argc, char** argv) {
             myGitAdd(file);
         }
     } else if (equals(instruction, "list-add")) { 
-        WorkTree* wt = ftwt(".add");
-        //on recupere sous format worktree le contenu de .add
-        char* str = wtts(wt);
-        print_color(stdout,".add :","blue");
-        //et on l'affiche
-        printf("%s",str);
-        free(str);
-        freeWorkTree(wt);
+        if (access(".add", F_OK) == 0) {
+            WorkTree* wt = ftwt(".add");
+            //on recupere sous format worktree le contenu de .add
+            char* str = wtts(wt);
+            print_color(stdout,".add :","blue");
+            //et on l'affiche
+            printf("%s",str);
+            free(str);
+            freeWorkTree(wt);
+        } else {
+            print_color(stderr,"No .add yet", "red");
+        }
     } else if (equals(instruction, "clear-add")) { 
         system("rm -f .add");
     } else if (equals(instruction, "commit")) { 
