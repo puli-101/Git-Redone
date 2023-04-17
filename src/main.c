@@ -18,6 +18,7 @@ int main(int argc, char** argv) {
 
     char* programme = argv[0];
     char* instruction = argv[1];
+    //affichage de tous les options
     if (equals(instruction, "help")) {
         print_color(stdout,"Options d'instructions :","blue");
         printf("%s init\n", programme);
@@ -80,8 +81,10 @@ int main(int argc, char** argv) {
         }
     } else if (equals(instruction, "list-add")) { 
         WorkTree* wt = ftwt(".add");
+        //on recupere sous format worktree le contenu de .add
         char* str = wtts(wt);
         print_color(stdout,".add :","blue");
+        //et on l'affiche
         printf("%s",str);
         free(str);
         freeWorkTree(wt);
@@ -141,11 +144,19 @@ int main(int argc, char** argv) {
             exit(-1);
         }
         char* remote_branch = argv[2];
+        char* current_branch = getCurrentBranch();
         char* msg = (argc >= 4 ? argv[3] : "");
+        bool success = true;
+        //peut etre que les deux branches coincident
+        if (equals(remote_branch, current_branch)) {
+            print_color(stderr,"Error, both branches refer to the current branch", "red");
+            free(current_branch);
+            exit(-1);
+        }
+        //on essaie de merger
         List* conflicts = merge(remote_branch, msg), *retry = NULL;
         if (*conflicts != NULL) {
-            int opt;
-            char* current_branch = getCurrentBranch();
+            char opt;
             List* current_conflicts;
             List* remote_conflicts;
             //if there is a file overlap we have to choose how to solve the conflict (choose which branch to keep the files in)
@@ -156,19 +167,19 @@ int main(int argc, char** argv) {
             fprintf(stderr, "2. Save Files from Branch %s (a deletion commit will be done for the current branch) before merging\n", remote_branch);
             fprintf(stderr, "3. Choose files manually\n");
             fprintf(stderr, "\033[0m");
-            scanf(" %d", &opt);
+            scanf(" %c", &opt);
             switch(opt) {
-                case 1:
+                case '1':
                     createDeletionCommit(remote_branch, conflicts, msg);
                     printf("\033[0;32mDeletion commit created\n \033[0m"); 
                     retry = merge(remote_branch, msg);
                 break;
-                case 2:
+                case '2':
                     createDeletionCommit(current_branch, conflicts, msg);
                     printf("\033[0;32mDeletion commit created\n \033[0m"); 
                     retry = merge(remote_branch, msg);
                 break;
-                case 3:
+                case '3':
                     current_conflicts = initList();
                     remote_conflicts = initList();
                     char destination[300];
@@ -209,17 +220,21 @@ int main(int argc, char** argv) {
                 break;
                 default:
                     print_color(stderr,"Operation aborted", "red");
+                    success = false;
                 break;
             } 
-            if (*retry != NULL)
+            if (retry != NULL && *retry != NULL) {
                 print_color(stderr, "Error while merging", "red");
+                success = false;
+            }
             freeList(retry);
-            free(current_branch);
         } else {
             print_color(stdout, "No conflicts found","green");
         }
+        free(current_branch);
         freeList(conflicts);
-        print_color(stdout, "Merge successful", "green");
+        if (success)
+            print_color(stdout, "Merge successful", "green");
     } else {
         fprintf(stderr, "command not found\n");
     }
