@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.3.4)  16 APR 2023 14:52
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.3.4)  16 APR 2023 18:37
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -9,8 +9,8 @@ LaTeX2e <2021-11-15> patch level 1
 L3 programming layer <2022-02-24>
 (/usr/local/texlive/2022/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
-(/usr/local/texlive/2022/texmf-dist/tex/latex/base/size11.clo
-File: size11.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
+(/usr/local/texlive/2022/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count185
 \c@section=\count186
@@ -199,11 +199,9 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 14.
+(Font)              <14.4> on input line 14.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 14.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 14.
+(Font)              <7> on input line 14.
 
 Underfull \hbox (badness 10000) in paragraph at lines 19--25
 
@@ -218,7 +216,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 19--25
 
 {/usr/local/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 28.
+(Font)              <12> on input line 28.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 28.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 28.
 
 Underfull \hbox (badness 10000) in paragraph at lines 26--34
 
@@ -235,37 +237,35 @@ Underfull \hbox (badness 10000) in paragraph at lines 26--34
  []
 
 [2] [3]
-Overfull \hbox (6.59354pt too wide) in paragraph at lines 47--48
-[]\OT1/cmr/m/n/10.95 Les fonc-tions de re-fe-rence[]handler.c (qui a pour hea-d
-er re-fe-rence[]handler.h)
+Overfull \hbox (20.02946pt too wide) in paragraph at lines 45--46
+[]\OT1/cmr/m/n/12 C'est le hea-der de work[]tree.c, ces do-cu-ments contiennent
+ la d^^Seclaration
  []
 
 
-Overfull \hbox (6.8pt too wide) in paragraph at lines 52--53
-\OT1/cmr/m/n/10.95 r^^Sesolution d'un probl^^Reme. Les fonc-tions d'uti-li-ties
- peuvent ^etre aussi des fonc-tions qui g^^Sen^^Seralisent
+Overfull \hbox (41.1398pt too wide) in paragraph at lines 47--48
+[]\OT1/cmr/m/n/12 Les fonc-tions de re-fe-rence[]handler.c (qui a pour hea-der 
+re-fe-rence[]handler.h)
  []
 
 [4] [5] [6] [7] [8] (./compte_rendu_std.aux) ) 
 Here is how much of TeX's memory you used:
- 3648 strings out of 478268
- 63304 string characters out of 5846348
- 379185 words of memory out of 5000000
- 21831 multiletter control sequences out of 15000+600000
- 474430 words of font info for 45 fonts, out of 8000000 for 9000
+ 3646 strings out of 478268
+ 63296 string characters out of 5846348
+ 380176 words of memory out of 5000000
+ 21830 multiletter control sequences out of 15000+600000
+ 474427 words of font info for 45 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 60i,7n,67p,1253b,426s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 60i,7n,67p,1243b,426s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2022/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2022/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2022/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2022/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2022/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2022/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmsy6.pfb>
-Output written on compte_rendu_std.pdf (8 pages, 112506 bytes).
+st/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2022/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2022/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2022/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmsy6.pfb>
+Output written on compte_rendu_std.pdf (8 pages, 82746 bytes).
 PDF statistics:
- 61 PDF objects out of 1000 (max. 8388607)
- 38 compressed objects within 1 object stream
+ 51 PDF objects out of 1000 (max. 8388607)
+ 32 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
