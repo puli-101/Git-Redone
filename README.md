@@ -8,17 +8,18 @@ The objective of this project is to study how version control software functions
     How to save changes that are not part of a snapshot?
 
 The current version of this project proposes the following instruction list:
-    - ./myGit init
-    - ./myGit list-refs 
-    - ./myGit create-ref <name> <hash> 
-    - ./myGit delete-ref <name> 
-    - ./myGit add <elem> [<elem2> <elem3> ...] 
-    - ./myGit list-add 
-    - ./myGit clear-add 
-    - ./myGit commit [-m \"<message>\"] 
-    - ./myGit get-current-branch 
-    - ./myGit branch <branch-name> 
-    - ./myGit branch-print <branch-name> 
-    - ./myGit checkout-branch <branch-name> 
-    - ./myGit checkout-commit <pattern> 
-    - ./myGit merge <branch> <message> 
+    
+    ./myGit init
+    ./myGit list-refs 
+    ./myGit create-ref <name> <hash> 
+    ./myGit delete-ref <name> 
+    ./myGit add <elem> [<elem2> <elem3> ...] 
+    ./myGit list-add 
+    ./myGit clear-add 
+    ./myGit commit [-m \"<message>\"] 
+    ./myGit get-current-branch 
+    ./myGit branch <branch-name> 
+    ./myGit branch-print <branch-name> 
+    ./myGit checkout-branch <branch-name> 
+    ./myGit checkout-commit <pattern> 
+    ./myGit merge <branch> <message> 
