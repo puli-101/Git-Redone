@@ -1,3 +1,6 @@
+# Git redone
+## A re-implementation of git primitives
+
 A version control software is a tool that enables the storage, tracking, and management of multiple versions of a project (or a set of files). These tools provide easy access to the history of all changes made to the files, allowing for the retrieval of a previous version in case of issues. Additionally, they are highly valuable for collaborative work, intelligently merging different versions of the same project. For instance, these tools are commonly used in software development to facilitate teamwork and maintain the source code for various versions of a software.
 
 The objective of this project is to study how version control software functions by detailing various data structures involved in its implementation. Specifically, we will focus on the following functionalities:
