@@ -12,17 +12,17 @@ The objective of this project is to study how version control software functions
 
 The current version of this project proposes the following instruction list:
     
-    ./myGit init
-    ./myGit list-refs 
-    ./myGit create-ref <name> <hash> 
-    ./myGit delete-ref <name> 
-    ./myGit add <elem> [<elem2> <elem3> ...] 
-    ./myGit list-add 
-    ./myGit clear-add 
-    ./myGit commit [-m \"<message>\"] 
-    ./myGit get-current-branch 
-    ./myGit branch <branch-name> 
-    ./myGit branch-print <branch-name> 
-    ./myGit checkout-branch <branch-name> 
-    ./myGit checkout-commit <pattern> 
-    ./myGit merge <branch> <message> 
+    ./bin/main init
+    ./bin/main list-refs 
+    ./bin/main create-ref <name> <hash> 
+    ./bin/main delete-ref <name> 
+    ./bin/main add <elem> [<elem2> <elem3> ...] 
+    ./bin/main list-add 
+    ./bin/main clear-add 
+    ./bin/main commit [-m \"<message>\"] 
+    ./bin/main get-current-branch 
+    ./bin/main branch <branch-name> 
+    ./bin/main branch-print <branch-name> 
+    ./bin/main checkout-branch <branch-name> 
+    ./bin/main checkout-commit <pattern> 
+    ./bin/main merge <branch> <message> 
